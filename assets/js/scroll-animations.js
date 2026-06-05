@@ -162,8 +162,10 @@ function travelProgress(rect, vh, delay = 0) {
  */
 export function createScrollAnimations() {
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
+  const staticMode = reduced || coarsePointer;
   const nativeSupported =
-    !reduced &&
+    !staticMode &&
     "CSS" in window &&
     typeof CSS.supports === "function" &&
     CSS.supports("animation-timeline: view()");
@@ -411,7 +413,7 @@ export function createScrollAnimations() {
       document.documentElement.classList.add("scroll-native");
     }
 
-    if (reduced) {
+    if (staticMode) {
       revealAllStatic();
       return api;
     }
@@ -452,7 +454,7 @@ export function createScrollAnimations() {
     if (nativeSupported) {
       document.documentElement.classList.add("scroll-native");
     }
-    if (reduced) {
+    if (staticMode) {
       revealAllStatic();
       return;
     }

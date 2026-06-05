@@ -30,6 +30,8 @@ Este portfólio foi criado para apresentar o trabalho de Leandro Fernandes para 
 - Assistente de IA integrado por Vercel Function em `/api/chat`.
 - Formulário de contato enviado via Resend por Vercel Function em `/api/contact`.
 - Animações por scroll, editor de código animado no hero e suporte a `prefers-reduced-motion`.
+- Overlay de carregamento global para a carga inicial, a transição da intro e a retomada da página no mobile (incluindo `bfcache`).
+- Animações de scroll reveladas de forma estática em dispositivos touch, priorizando legibilidade e estabilidade visual.
 - Efeito visual de cursor decorativo, desativado em touch ou movimento reduzido.
 
 ### Tecnologias usadas
@@ -67,10 +69,10 @@ Portfólio/
 │   │   ├── data.js
 │   │   ├── i18n.js
 │   │   ├── intro-experience.js
+│   │   ├── loading-overlay.js
 │   │   ├── main.js
 │   │   ├── nav.js
 │   │   ├── professional-solar-system.js
-│   │   ├── reveal.js
 │   │   ├── scroll-animations.js
 │   │   └── theme.js
 │   └── media/
@@ -258,6 +260,8 @@ This portfolio was created to present Leandro Fernandes' work to clients, recrui
 - AI assistant integrated through the Vercel Function at `/api/chat`.
 - Contact form sent through Resend via the Vercel Function at `/api/contact`.
 - Scroll animations, animated code editor in the hero, and `prefers-reduced-motion` support.
+- Global loading overlay for the initial load, the intro transition, and page resume on mobile (including `bfcache`).
+- Scroll animations rendered statically on touch devices, prioritizing readability and visual stability.
 - Decorative cursor effect, disabled on touch devices or reduced motion.
 
 ### Technologies
@@ -295,10 +299,10 @@ Portfólio/
 │   │   ├── data.js
 │   │   ├── i18n.js
 │   │   ├── intro-experience.js
+│   │   ├── loading-overlay.js
 │   │   ├── main.js
 │   │   ├── nav.js
 │   │   ├── professional-solar-system.js
-│   │   ├── reveal.js
 │   │   ├── scroll-animations.js
 │   │   └── theme.js
 │   └── media/

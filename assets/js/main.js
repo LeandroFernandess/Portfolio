@@ -20,6 +20,7 @@ import { initAiChat } from "./ai-chat.js";
 import { initTheme } from "./theme.js";
 import { initIntroExperience } from "./intro-experience.js";
 import { initCursorEffect } from "./cursor-effect.js";
+import { hideLoader, flashLoader } from "./loading-overlay.js";
 
 const scrollAnimations = createScrollAnimations();
 let openProjectVideoModal = () => { };
@@ -340,6 +341,53 @@ function attachCardGlow(root) {
 }
 
 /**
+ * Oculta o overlay de carregamento inicial quando os assets críticos
+ * já foram baixados (evento `load`), com fallback caso ele já tenha
+ * disparado antes da inicialização.
+ * @returns {void}
+ */
+function dismissInitialLoader() {
+  const finish = () => requestAnimationFrame(() => hideLoader());
+  if (document.readyState === "complete") {
+    finish();
+  } else {
+    window.addEventListener("load", finish, { once: true });
+  }
+}
+
+/**
+ * Trata a retomada da página no mobile (volta de links externos,
+ * troca de aba e restauração via bfcache). Mascara o re-render dos
+ * efeitos pesados com um flash do overlay e recalcula as animações
+ * de scroll para evitar estado visual "travado".
+ * @returns {void}
+ */
+function setupResumeHandling() {
+  const coarsePointer = window.matchMedia?.("(pointer: coarse)");
+  const isMobile = () => Boolean(coarsePointer?.matches);
+  const RESUME_THRESHOLD_MS = 1200;
+  let hiddenAt = 0;
+
+  const resume = () => {
+    flashLoader({ messageKey: "loader.resuming" });
+    scrollAnimations.refresh();
+  };
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") {
+      hiddenAt = performance.now();
+      return;
+    }
+    if (!isMobile()) return;
+    if (performance.now() - hiddenAt > RESUME_THRESHOLD_MS) resume();
+  });
+
+  window.addEventListener("pageshow", (event) => {
+    if (event.persisted && isMobile()) resume();
+  });
+}
+
+/**
  * Inicializa a aplicação: configura i18n, tema, modal de vídeo, renderiza seções orientadas a dados e inicializa módulos de comportamento.
  * @returns {void}
  */
@@ -365,6 +413,9 @@ function init() {
 
   const yearEl = document.querySelector("#year");
   if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+
+  setupResumeHandling();
+  dismissInitialLoader();
 }
 
 if (document.readyState === "loading") {

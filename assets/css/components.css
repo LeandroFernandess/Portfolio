@@ -238,27 +238,6 @@ html[data-theme="light"] .solar-intro__backdrop {
     gap: var(--space-4);
 }
 
-.solar-intro__skip {
-    min-height: 2.25rem;
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-pill);
-    background: rgba(255, 255, 255, 0.035);
-    color: var(--color-text-muted);
-    cursor: pointer;
-    font-size: var(--fs-sm);
-    padding: 0.4rem 0.8rem;
-    transition:
-        color var(--dur-fast) var(--ease-out),
-        background var(--dur-fast) var(--ease-out),
-        border-color var(--dur-fast) var(--ease-out);
-}
-
-.solar-intro__skip:hover {
-    background: rgba(255, 255, 255, 0.07);
-    border-color: var(--color-line-strong);
-    color: var(--color-text);
-}
-
 .solar-intro__hero {
     position: relative;
     z-index: 2;
@@ -515,12 +494,6 @@ html[data-theme="light"] .solar-intro__shell::before {
 
     .solar-intro__header .section-eyebrow {
         font-size: 0.68rem;
-    }
-
-    .solar-intro__skip {
-        min-height: 2rem;
-        font-size: var(--fs-xs);
-        padding: 0.35rem 0.7rem;
     }
 
     .solar-intro__hero {
@@ -1607,6 +1580,137 @@ html[data-theme="light"] .form__footer .btn--primary:hover {
     width: 1rem;
     height: 1rem;
     animation: spin 0.8s linear infinite;
+}
+
+/* ------------------------------------------------------------
+   Overlay de carregamento global (app-loader)
+   ------------------------------------------------------------
+   Máscara visual elegante (tema solar) usada na carga inicial,
+   na transição da intro e na retomada da página no mobile.
+   O JS apenas alterna .is-active / .is-leaving. */
+
+.app-loader {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: grid;
+    place-items: center;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+        opacity var(--dur-slow, 0.5s) var(--ease-out, ease),
+        visibility 0s linear var(--dur-slow, 0.5s);
+}
+
+.app-loader[hidden] {
+    display: none;
+}
+
+.app-loader.is-active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition:
+        opacity var(--dur-base, 0.3s) var(--ease-out, ease),
+        visibility 0s;
+}
+
+.app-loader__backdrop {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 50% 38%, rgba(124, 156, 255, 0.16), transparent 60%),
+        var(--color-bg, #08080a);
+}
+
+html[data-theme="light"] .app-loader__backdrop {
+    background:
+        radial-gradient(circle at 50% 38%, rgba(79, 111, 232, 0.14), transparent 60%),
+        var(--color-bg, #f6f7fb);
+}
+
+.app-loader__core {
+    position: relative;
+    width: 7.5rem;
+    height: 7.5rem;
+    display: grid;
+    place-items: center;
+}
+
+.app-loader__star {
+    width: 1.1rem;
+    height: 1.1rem;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 40%, #ffffff, var(--color-accent, #7c9cff) 70%);
+    box-shadow: 0 0 1.4rem rgba(124, 156, 255, 0.8);
+    animation: loader-pulse 1.8s var(--ease-in-out, ease-in-out) infinite;
+}
+
+.app-loader__orbit {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px solid rgba(124, 156, 255, 0.18);
+}
+
+.app-loader__orbit::after {
+    content: "";
+    position: absolute;
+    top: -0.3rem;
+    left: 50%;
+    width: 0.6rem;
+    height: 0.6rem;
+    margin-left: -0.3rem;
+    border-radius: 50%;
+    background: var(--color-accent, #7c9cff);
+    box-shadow: 0 0 0.8rem rgba(124, 156, 255, 0.9);
+}
+
+.app-loader__orbit {
+    animation: spin 2.4s linear infinite;
+}
+
+.app-loader__orbit--2 {
+    inset: 1.5rem;
+    border-color: rgba(126, 224, 184, 0.16);
+    animation-duration: 3.4s;
+    animation-direction: reverse;
+}
+
+.app-loader__orbit--2::after {
+    background: #7ee0b8;
+    box-shadow: 0 0 0.8rem rgba(126, 224, 184, 0.85);
+}
+
+.app-loader__label {
+    position: absolute;
+    bottom: clamp(3rem, 12vh, 6rem);
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+    font-size: var(--fs-sm, 0.875rem);
+    letter-spacing: 0.02em;
+    color: var(--color-text-muted, #9aa4b2);
+}
+
+@media (max-width: 640px) {
+    .app-loader__core {
+        width: 6rem;
+        height: 6rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .app-loader__star,
+    .app-loader__orbit {
+        animation: none !important;
+    }
+
+    .app-loader__orbit::after {
+        opacity: 0.6;
+    }
 }
 
 .is-hidden {

@@ -27,7 +27,6 @@ const translations = {
             security: "Segurança",
             ai: "IA",
             contact: "Contato",
-            cta: "Vamos conversar",
             openMenu: "Abrir menu",
             solar: "Sistema Solar",
         },
@@ -35,6 +34,11 @@ const translations = {
             group: "Selecionar idioma",
             pt: "Português brasileiro",
             en: "Inglês americano",
+        },
+        loader: {
+            label: "Preparando experiência…",
+            entering: "Abrindo o portfólio…",
+            resuming: "Retomando…",
         },
         theme: {
             light: "Light",
@@ -44,7 +48,6 @@ const translations = {
         },
         solar: {
             title: "Sistema Solar Profissional",
-            skipIntro: "Pular intro",
             kicker: "Órbita profissional",
             summary: "Domínios técnicos orbitando um centro de entrega, automação e operação.",
             statusTitle: "Automação e análise com código claro.",
@@ -146,7 +149,7 @@ const translations = {
             fallbackTitle: "Vídeo do projeto",
         },
         footer: {
-            text: "Leandro. Feito com código e atenção aos detalhes.",
+            text: "Leandro. Feito com comprometimento e atenção aos detalhes.",
         },
     },
     "en-US": {
@@ -163,7 +166,6 @@ const translations = {
             security: "Security",
             ai: "AI",
             contact: "Contact",
-            cta: "Let's talk",
             openMenu: "Open menu",
             solar: "Solar System",
         },
@@ -171,6 +173,11 @@ const translations = {
             group: "Select language",
             pt: "Brazilian Portuguese",
             en: "American English",
+        },
+        loader: {
+            label: "Preparing experience…",
+            entering: "Opening the portfolio…",
+            resuming: "Resuming…",
         },
         theme: {
             light: "Light",
@@ -180,7 +187,6 @@ const translations = {
         },
         solar: {
             title: "Professional Solar System",
-            skipIntro: "Skip intro",
             kicker: "Professional orbit",
             summary: "Technical domains orbiting a delivery, automation, and operations core.",
             statusTitle: "Automation and analysis with clear code.",

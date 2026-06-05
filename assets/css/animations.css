@@ -88,6 +88,20 @@
     }
 }
 
+@keyframes loader-pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(0.78);
+        opacity: 0.65;
+    }
+}
+
 @keyframes bounce-soft {
 
     0%,
@@ -367,5 +381,21 @@
 
     .code-caret {
         animation: none !important;
+    }
+}
+
+/* ------------------------------------------------------------
+   Redução de custo visual no mobile
+   ------------------------------------------------------------
+   Em telas pequenas / ponteiro grosso, os blobs ambientes deixam
+   de animar (scale + blur de 120px é caro de compor no celular).
+   O gradiente permanece — preserva a identidade, sem o custo de
+   animação contínua que agrava o travamento ao retomar a página. */
+   
+@media (max-width: 768px) and (pointer: coarse) {
+
+    .ambient__blob {
+        animation: none !important;
+        will-change: auto;
     }
 }

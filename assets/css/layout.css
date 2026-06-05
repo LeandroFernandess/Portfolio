@@ -129,10 +129,6 @@ html[data-theme="light"] .nav.is-scrolled {
     gap: var(--space-1);
 }
 
-.nav__cta {
-    display: none;
-}
-
 .nav__tools {
     display: none;
     align-items: center;
@@ -449,10 +445,6 @@ html[data-theme="light"] .mobile-menu {
 @media (min-width: 1080px) {
     .nav__links {
         display: flex;
-    }
-
-    .nav__cta {
-        display: inline-flex;
     }
 
     .nav__tools {

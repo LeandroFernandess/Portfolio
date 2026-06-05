@@ -57,6 +57,29 @@
 </head>
 
 <body>
+    <!-- Overlay de carregamento global: cobre carga inicial, transição da
+         intro (Sistema Solar → portfólio) e retomada no mobile (bfcache). -->
+    <div id="appLoader" class="app-loader is-active" role="status" aria-live="polite" data-app-loader>
+        <div class="app-loader__backdrop" aria-hidden="true"></div>
+        <div class="app-loader__core" aria-hidden="true">
+            <span class="app-loader__orbit"></span>
+            <span class="app-loader__orbit app-loader__orbit--2"></span>
+            <span class="app-loader__star"></span>
+        </div>
+        <p class="app-loader__label" data-app-loader-label data-i18n="loader.label">Preparando experiência…</p>
+    </div>
+    <script>
+        window.addEventListener("load", function () {
+            window.setTimeout(function () {
+                var loader = document.getElementById("appLoader");
+                if (loader && loader.classList.contains("is-active")) {
+                    loader.classList.remove("is-active");
+                    loader.hidden = true;
+                }
+            }, 5000);
+        });
+    </script>
+
     <div class="ambient" aria-hidden="true">
         <div class="ambient__blob ambient__blob--1"></div>
         <div class="ambient__blob ambient__blob--2"></div>
@@ -70,8 +93,6 @@
         <div class="solar-intro__shell">
             <div class="solar-intro__header">
                 <span class="section-eyebrow" data-i18n="solar.title">Sistema Solar Profissional</span>
-                <button type="button" class="solar-intro__skip" data-solar-close data-i18n="solar.skipIntro">Pular
-                    intro</button>
             </div>
 
             <div class="solar-intro__hero">
@@ -159,14 +180,6 @@
                 <li><a class="nav-link" href="#ai" data-i18n="nav.ai">IA</a></li>
                 <li><a class="nav-link" href="#contact" data-i18n="nav.contact">Contato</a></li>
             </ul>
-
-            <a href="#contact" class="btn btn--ghost nav__cta">
-                <span data-i18n="nav.cta">Vamos conversar</span>
-                <svg class="btn__icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path
-                        d="M7.05 4.05a1 1 0 011.414 0l5 5a1 1 0 010 1.414l-5 5a1 1 0 11-1.414-1.414L11.586 10 7.05 5.464a1 1 0 010-1.414z" />
-                </svg>
-            </a>
 
             <div class="nav__tools">
                 <button type="button" id="replayIntroBtn" class="nav-tool" data-i18n="nav.solar">Sistema Solar</button>
@@ -529,9 +542,7 @@
     <footer class="footer">
         <div class="container footer__inner">
             <p>
-                © <span id="year"></span> <span data-i18n="footer.text">Leandro. Feito com comprometimento na qualidade
-                    e
-                    atenção aos detalhes.</span>
+                © <span id="year"></span> <span data-i18n="footer.text"></span>
             </p>
             <ul class="footer__social">
                 <li>

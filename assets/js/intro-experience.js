@@ -5,6 +5,7 @@
  */
 
 import { createProfessionalSolarSystem } from "./professional-solar-system.js";
+import { showLoader, hideLoader } from "./loading-overlay.js";
 
 const STORAGE_KEY = "portfolioIntroSeen";
 
@@ -20,6 +21,7 @@ export function initIntroExperience() {
     const closeBtns = dialog.querySelectorAll("[data-solar-close]");
     const finishBtn = dialog.querySelector("[data-solar-finish]");
     const solarSystem = createProfessionalSolarSystem(dialog);
+    const coarsePointer = window.matchMedia?.("(pointer: coarse)");
     let previousFocus = null;
     let active = false;
 
@@ -47,18 +49,33 @@ export function initIntroExperience() {
             solarSystem.start();
             active = true;
         }
-        dialog.querySelector("[data-solar-close]")?.focus();
+        (dialog.querySelector("[data-solar-stage]") ?? finishBtn)?.focus();
     };
 
     const close = ({ seen = true } = {}) => {
         if (seen) markSeen();
-        if (active) {
-            solarSystem.cleanup();
-            active = false;
+
+        if (!active) {
+            dialog.hidden = true;
+            document.body.classList.remove("has-intro-open");
+            previousFocus?.focus?.();
+            return;
         }
+
+        const wantsMask = Boolean(coarsePointer?.matches);
+        if (wantsMask) showLoader({ messageKey: "loader.entering" });
+
         dialog.hidden = true;
         document.body.classList.remove("has-intro-open");
         previousFocus?.focus?.();
+
+        requestAnimationFrame(() =>
+            requestAnimationFrame(() => {
+                solarSystem.cleanup();
+                active = false;
+                if (wantsMask) hideLoader();
+            })
+        );
     };
 
     closeBtns.forEach((button) => button.addEventListener("click", () => close()));

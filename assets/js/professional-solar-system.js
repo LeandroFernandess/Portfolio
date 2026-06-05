@@ -166,6 +166,7 @@ export function createProfessionalSolarSystem(root) {
     const titleEl = root.querySelector("[data-solar-active-title]");
     const descriptionEl = root.querySelector("[data-solar-active-description]");
     const mediaQuery = window.matchMedia?.(REDUCED_MOTION_QUERY);
+    const isCoarsePointer = Boolean(window.matchMedia?.("(pointer: coarse)")?.matches);
 
     let THREE = null;
     let scene = null;
@@ -274,8 +275,8 @@ export function createProfessionalSolarSystem(root) {
         camera.position.set(0, 4.9, 8.4);
         camera.lookAt(0, 0, 0);
 
-        renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: "high-performance" });
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+        renderer = new THREE.WebGLRenderer({ alpha: true, antialias: !isCoarsePointer, powerPreference: "high-performance" });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isCoarsePointer ? 1.5 : 1.75));
         renderer.outputColorSpace = THREE.SRGBColorSpace;
         stage.append(renderer.domElement);
 
@@ -456,12 +457,26 @@ export function createProfessionalSolarSystem(root) {
             setActiveDomain(DOMAINS[DOMAINS.length - 1], { focus: isDomainTarget });
         }
     };
+    
+    const handleVisibility = () => {
+        if (document.visibilityState === "hidden") {
+            if (animationFrame) {
+                window.cancelAnimationFrame(animationFrame);
+                animationFrame = 0;
+            }
+            return;
+        }
+        if (started && !fallbackMode && renderer && !animationFrame) {
+            animate();
+        }
+    };
 
     const attachListeners = () => {
         stage?.addEventListener("pointermove", handlePointerMove);
         stage?.addEventListener("pointerleave", handlePointerLeave);
         stage?.addEventListener("click", handleClick);
         root.addEventListener("keydown", handleKeyDown);
+        document.addEventListener("visibilitychange", handleVisibility);
         fallbackButtons.forEach((button) => {
             button.addEventListener("click", handleFallbackClick);
             button.addEventListener("focus", handleFallbackFocus);
@@ -473,6 +488,7 @@ export function createProfessionalSolarSystem(root) {
         stage?.removeEventListener("pointerleave", handlePointerLeave);
         stage?.removeEventListener("click", handleClick);
         root.removeEventListener("keydown", handleKeyDown);
+        document.removeEventListener("visibilitychange", handleVisibility);
         fallbackButtons.forEach((button) => {
             button.removeEventListener("click", handleFallbackClick);
             button.removeEventListener("focus", handleFallbackFocus);
