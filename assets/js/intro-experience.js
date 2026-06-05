@@ -18,7 +18,6 @@ export function initIntroExperience() {
     const openBtns = document.querySelectorAll("#replayIntroBtn, [data-solar-open]");
     if (!dialog) return;
 
-    const closeBtns = dialog.querySelectorAll("[data-solar-close]");
     const finishBtn = dialog.querySelector("[data-solar-finish]");
     const solarSystem = createProfessionalSolarSystem(dialog);
     const coarsePointer = window.matchMedia?.("(pointer: coarse)");
@@ -78,7 +77,6 @@ export function initIntroExperience() {
         );
     };
 
-    closeBtns.forEach((button) => button.addEventListener("click", () => close()));
     finishBtn?.addEventListener("click", () => close());
     openBtns.forEach((button) => button.addEventListener("click", open));
 
