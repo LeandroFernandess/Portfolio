@@ -1,0 +1,339 @@
+/* =========================================================
+   Animações — keyframes, reveals bidirecionais e movimento
+   ---------------------------------------------------------
+   As animações de entrada/saída são dirigidas pelo scroll
+   (scroll-animations.js). Cada elemento [data-animate] expõe
+   uma variável --progress (0→1) e o CSS deriva transform/opacity
+   a partir dela. O movimento é simétrico: descer constrói,
+   subir desconstrói.
+
+   Dois caminhos:
+     • Nativo  → quando o browser suporta `animation-timeline:
+       view()`, o JS adiciona .scroll-native no <html> e o CSS
+       anima na thread de composição (bloco @supports abaixo).
+     • Fallback → o JS escreve --progress e o CSS usa abaixo.
+
+   Fail-safe: --progress tem default 1 (visível). Se o JS falhar,
+   nada permanece escondido.
+   ========================================================= */
+
+/* ---------- Keyframes ---------- */
+
+@keyframes float-1 {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    50% {
+        transform: translate(60px, 80px) scale(1.1);
+    }
+}
+
+@keyframes float-2 {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    50% {
+        transform: translate(-80px, -60px) scale(1.08);
+    }
+}
+
+@keyframes float-3 {
+
+    0%,
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    50% {
+        transform: translate(-55%, -45%) scale(1.15);
+    }
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.4;
+        transform: scale(0.85);
+    }
+}
+
+@keyframes blink {
+
+    0%,
+    50% {
+        opacity: 1;
+    }
+
+    50.01%,
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes bounce-soft {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(6px);
+    }
+}
+
+.scroll-hint svg {
+    animation: bounce-soft 2s var(--ease-in-out) infinite;
+}
+
+/* ---------- Reveal bidirecional dirigido por scroll ---------- */
+/* Contrato: cada [data-animate] recebe --progress (0→1→0) do JS.
+   Default 1 = visível (fail-safe). O tipo define a transformação. */
+
+[data-animate] {
+    --progress: 1;
+}
+
+[data-animate="text"] {
+    opacity: var(--progress);
+    transform: translateY(calc((1 - var(--progress)) * 28px));
+}
+
+[data-animate="card"] {
+    opacity: var(--progress);
+    transform: translateY(calc((1 - var(--progress)) * 28px)) scale(calc(0.95 + var(--progress) * 0.05));
+}
+
+[data-animate="line"] {
+    transform: scaleX(var(--progress));
+    transform-origin: left center;
+}
+
+[data-animate="image"] {
+    opacity: var(--progress);
+    filter: blur(calc((1 - var(--progress)) * 4px));
+}
+
+/* ---------- Caminho NATIVO: scroll-driven em composição ----------
+   Quando o JS detecta suporte e marca .scroll-native, deixamos o
+   browser dirigir as keyframes diretamente pela timeline da view,
+   fora da main thread. As keyframes são simétricas (entra e sai). */
+
+@supports (animation-timeline: view()) {
+    html.scroll-native [data-animate] {
+        animation-timeline: view();
+        animation-range: cover 0% cover 100%;
+        animation-fill-mode: both;
+        will-change: transform, opacity;
+    }
+
+    html.scroll-native [data-animate="text"] {
+        animation-name: build-text;
+    }
+
+    html.scroll-native [data-animate="card"] {
+        animation-name: build-card;
+    }
+
+    html.scroll-native [data-animate="line"] {
+        animation-name: build-line;
+    }
+
+    html.scroll-native [data-animate="image"] {
+        animation-name: build-image;
+    }
+
+    @keyframes build-text {
+        0% {
+            opacity: 0;
+            transform: translateY(28px);
+        }
+
+        32%,
+        70% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translateY(28px);
+        }
+    }
+
+    @keyframes build-card {
+        0% {
+            opacity: 0;
+            transform: translateY(28px) scale(0.95);
+        }
+
+        32%,
+        70% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translateY(28px) scale(0.95);
+        }
+    }
+
+    @keyframes build-line {
+        0% {
+            transform: scaleX(0);
+        }
+
+        32%,
+        70% {
+            transform: scaleX(1);
+        }
+
+        100% {
+            transform: scaleX(0);
+        }
+    }
+
+    @keyframes build-image {
+        0% {
+            opacity: 0;
+            filter: blur(4px);
+        }
+
+        32%,
+        70% {
+            opacity: 1;
+            filter: blur(0);
+        }
+
+        100% {
+            opacity: 0;
+            filter: blur(4px);
+        }
+    }
+}
+
+/* ---------- Metáforas de construção por seção ----------
+   Overlay monospace sutil, injetado por scroll-animations.js. O texto
+   é "digitado" conforme o progresso da seção e apagado ao sair. */
+
+[data-metaphor] {
+    position: relative;
+}
+
+.metaphor {
+    position: absolute;
+    top: var(--space-5, 1.5rem);
+    left: var(--space-4, 1rem);
+    z-index: 1;
+    pointer-events: none;
+    max-width: min(90vw, 38rem);
+    opacity: 0.5;
+}
+
+#home>.metaphor {
+    top: clamp(5.75rem, 12vh, 7.5rem);
+    left: var(--container-pad);
+    max-width: min(82vw, 24rem);
+    opacity: 0.26;
+}
+
+@media (min-width: 768px) {
+    #home>.metaphor {
+        top: clamp(7.5rem, 14vh, 9.5rem);
+        left: auto;
+        right: max(var(--container-pad), calc((100vw - var(--container-max)) / 2 + var(--container-pad)));
+        max-width: min(30rem, 34vw);
+        opacity: 0.34;
+    }
+}
+
+.metaphor__code {
+    margin: 0;
+    display: inline;
+    font-family: var(--font-mono, "JetBrains Mono", monospace);
+    font-size: 0.72rem;
+    line-height: 1.5;
+    letter-spacing: 0.01em;
+    color: var(--color-text-muted, #8b8b96);
+    white-space: pre-wrap;
+}
+
+.metaphor__caret {
+    display: inline-block;
+    width: 0.5ch;
+    height: 1em;
+    margin-left: 1px;
+    transform: translateY(0.15em);
+    background: var(--color-accent, #6366f1);
+    animation: blink 1s step-end infinite;
+}
+
+.metaphor__caret.is-idle {
+    animation: none;
+    opacity: 0.6;
+}
+
+.no-js [data-animate] {
+    --progress: 1;
+    opacity: 1;
+    transform: none;
+    filter: none;
+}
+
+/* ------------------------------------------------------------
+   Preferência de movimento reduzido
+   Desliga todas as animações não essenciais e revela o
+   conteúdo imediatamente — acessibilidade em primeiro lugar.
+   ------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    [data-animate] {
+        --progress: 1 !important;
+        opacity: 1 !important;
+        transform: none !important;
+        filter: none !important;
+        animation: none !important;
+    }
+
+    .metaphor__caret {
+        animation: none !important;
+        opacity: 0 !important;
+    }
+
+    .ambient__blob {
+        animation: none !important;
+    }
+
+    .code-caret {
+        animation: none !important;
+    }
+}
