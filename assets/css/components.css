@@ -18,6 +18,8 @@
     font-weight: var(--fw-semibold);
     cursor: pointer;
     border: 1px solid transparent;
+    max-width: 100%;
+    text-align: center;
     transition: transform var(--dur-base) var(--ease-spring),
         box-shadow var(--dur-base) var(--ease-out),
         background var(--dur-base) var(--ease-out),
@@ -75,6 +77,7 @@ html[data-theme="light"] .btn--primary {
     font-size: var(--fs-xs);
     font-weight: var(--fw-medium);
     cursor: pointer;
+    max-width: 100%;
     padding: 0.45rem 0.75rem;
     transition:
         color var(--dur-fast) var(--ease-out),
@@ -100,6 +103,7 @@ html[data-theme="light"] .btn--primary {
 .language-switch {
     display: inline-flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: var(--space-1);
     padding: 0.18rem;
     border: 1px solid var(--color-line);
@@ -109,7 +113,8 @@ html[data-theme="light"] .btn--primary {
 
 .language-switch--mobile {
     margin-block: var(--space-2);
-    width: max-content;
+    width: fit-content;
+    max-width: 100%;
 }
 
 .language-option {
@@ -199,6 +204,7 @@ html[data-theme="light"] .solar-intro__backdrop {
     width: min(100%, 68rem);
     max-height: min(90svh, 52rem);
     overflow: auto;
+    overscroll-behavior: contain;
     border: 1px solid var(--color-line-strong);
     border-radius: var(--radius-xl);
     background:
@@ -261,6 +267,7 @@ html[data-theme="light"] .solar-intro__backdrop {
     max-width: 42rem;
     margin: var(--space-5) auto 0;
     text-align: center;
+    min-width: 0;
 }
 
 .solar-intro__kicker {
@@ -275,6 +282,7 @@ html[data-theme="light"] .solar-intro__backdrop {
     color: var(--color-text);
     font-size: clamp(2.2rem, 5vw, 4.1rem);
     line-height: var(--lh-tight);
+    overflow-wrap: break-word;
 }
 
 .solar-intro__hero p {
@@ -294,6 +302,7 @@ html[data-theme="light"] .solar-intro__backdrop {
     box-shadow:
         inset 0 1px 0 rgba(255, 255, 255, 0.04),
         inset 0 -18px 40px rgba(3, 7, 18, 0.1);
+    min-width: 0;
 }
 
 .solar-intro__experience::before {
@@ -350,6 +359,7 @@ html[data-theme="light"] .solar-intro__experience {
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
     padding: var(--space-4);
+    min-width: 0;
 }
 
 html[data-theme="light"] .solar-intro__status {
@@ -370,6 +380,7 @@ html[data-theme="light"] .solar-intro__status {
     color: var(--color-text);
     font-size: var(--fs-lg);
     line-height: var(--lh-snug);
+    overflow-wrap: break-word;
 }
 
 .solar-intro__status [data-solar-active-description] {
@@ -391,6 +402,7 @@ html[data-theme="light"] .solar-intro__status {
     gap: var(--space-3);
     place-content: center;
     padding: clamp(1rem, 4vw, 4rem);
+    min-width: 0;
 }
 
 .solar-intro__fallback[hidden] {
@@ -408,6 +420,7 @@ html[data-theme="light"] .solar-intro__status {
     color: var(--color-text-muted);
     cursor: pointer;
     padding: var(--space-3);
+    min-width: 0;
     transition:
         transform var(--dur-fast) var(--ease-out),
         border-color var(--dur-fast) var(--ease-out),
@@ -426,6 +439,7 @@ html[data-theme="light"] .solar-intro__status {
 .solar-domain span {
     font-size: var(--fs-sm);
     font-weight: var(--fw-semibold);
+    overflow-wrap: anywhere;
 }
 
 .solar-domain[data-domain-id="python"] {
@@ -481,38 +495,95 @@ html[data-theme="light"] .solar-intro__shell::before {
 @media (max-width: 760px) {
     .solar-intro {
         align-items: start;
+        padding-block:
+            max(var(--container-pad), env(safe-area-inset-top, 0px)) max(var(--container-pad), env(safe-area-inset-bottom, 0px));
     }
 
     .solar-intro__shell {
-        max-height: calc(100svh - (var(--container-pad) * 2));
+        display: grid;
+        gap: var(--space-3);
+        border-radius: calc(var(--radius-xl) - 0.4rem);
+        max-height:
+            calc(100svh - max(var(--container-pad), env(safe-area-inset-top, 0px)) - max(var(--container-pad), env(safe-area-inset-bottom, 0px)));
+        padding: 0.95rem;
     }
 
     .solar-intro__header {
         align-items: flex-start;
+        gap: var(--space-3);
+    }
+
+    .solar-intro__header .section-eyebrow {
+        font-size: 0.68rem;
+    }
+
+    .solar-intro__skip {
+        min-height: 2rem;
+        font-size: var(--fs-xs);
+        padding: 0.35rem 0.7rem;
     }
 
     .solar-intro__hero {
+        gap: var(--space-1);
+        margin-top: 0;
         text-align: left;
     }
 
     .solar-intro__hero h2 {
-        font-size: clamp(2rem, 12vw, 3rem);
+        font-size: clamp(1.8rem, 10vw, 2.7rem);
+    }
+
+    .solar-intro__hero p,
+    .solar-intro__footer,
+    .solar-intro__status [data-solar-active-description] {
+        font-size: var(--fs-xs);
     }
 
     .solar-intro__experience {
-        min-height: 32rem;
+        --solar-scene-height: clamp(10.75rem, 28svh, 14rem);
+        display: grid;
+        grid-template-rows: var(--solar-scene-height) auto;
+        min-height: auto;
+        margin-block: 0;
+    }
+
+    .solar-intro__stage,
+    .solar-intro__fallback {
+        position: relative;
+        inset: auto;
+        grid-column: 1;
+        grid-row: 1;
+        min-height: var(--solar-scene-height);
     }
 
     .solar-intro__status {
-        right: 1rem;
-        left: 1rem;
-        bottom: 1rem;
+        position: relative;
+        right: auto;
+        left: auto;
+        bottom: auto;
+        margin: 0;
         width: auto;
+        max-height: none;
+        overflow: visible;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+        padding: 0.75rem;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+    }
+
+    .solar-intro__status strong {
+        font-size: 1rem;
+    }
+
+    .solar-intro__hint {
+        font-size: 0.68rem;
+        line-height: 1.45;
     }
 
     .solar-intro__fallback {
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        padding: var(--space-3);
+        padding: 0.75rem;
     }
 
     .solar-domain {
@@ -522,14 +593,34 @@ html[data-theme="light"] .solar-intro__shell::before {
     .solar-intro__footer {
         align-items: stretch;
         flex-direction: column;
+        gap: var(--space-2);
     }
 
     .solar-intro__actions {
         justify-content: stretch;
+        gap: var(--space-2);
     }
 
     .solar-intro__actions .btn {
         width: 100%;
+    }
+}
+
+@media (max-width: 380px) {
+    .solar-intro__shell {
+        padding: 0.85rem;
+    }
+
+    .solar-intro__hero h2 {
+        font-size: clamp(1.65rem, 9.6vw, 2.2rem);
+    }
+
+    .solar-intro__experience {
+        --solar-scene-height: clamp(9.75rem, 25svh, 12rem);
+    }
+
+    .solar-intro__status strong {
+        font-size: 0.95rem;
     }
 }
 
@@ -593,6 +684,8 @@ html[data-theme="light"] .solar-intro__shell::before {
     color: var(--color-text);
     font-weight: var(--fw-medium);
     font-size: var(--fs-sm);
+    min-width: 0;
+    overflow-wrap: anywhere;
     transition: gap var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
 }
 
@@ -727,7 +820,7 @@ html[data-theme="light"] .link-arrow--muted:hover {
 
 .code-window {
     width: 100%;
-    max-width: 34rem;
+    max-width: min(100%, 34rem);
     border-radius: var(--radius-lg);
     background: linear-gradient(180deg, rgba(20, 20, 26, 0.9), rgba(12, 12, 16, 0.92));
     border: 1px solid var(--color-line-strong);
@@ -735,6 +828,17 @@ html[data-theme="light"] .link-arrow--muted:hover {
     overflow: hidden;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
+}
+
+@media (max-width: 767px) {
+    .code-window {
+        transform: translateY(-0.35rem) scale(0.94);
+        opacity: 0.68;
+    }
+
+    .code-window__body {
+        min-height: 13rem;
+    }
 }
 
 html[data-theme="light"] .code-window {
@@ -798,6 +902,7 @@ html[data-theme="light"] .code-window__file {
     line-height: 1.7;
     padding: var(--space-4) 0;
     min-height: 17rem;
+    min-width: 0;
 }
 
 html[data-theme="light"] .code-window__body {
@@ -829,6 +934,7 @@ html[data-theme="light"] .code-window__gutter {
     word-break: break-word;
     color: var(--color-text);
     overflow: hidden;
+    min-width: 0;
 }
 
 html[data-theme="light"] .code-window__code {
@@ -938,6 +1044,7 @@ html[data-theme="light"] .code-caret {
     background: var(--gradient-surface);
     border: 1px solid var(--color-line);
     overflow: hidden;
+    min-width: 0;
     transition: transform var(--dur-base) var(--ease-out),
         border-color var(--dur-base) var(--ease-out),
         background var(--dur-base) var(--ease-out);
@@ -981,6 +1088,7 @@ html[data-theme="light"] .code-caret {
     display: grid;
     gap: var(--space-6);
     align-items: center;
+    min-width: 0;
 }
 
 @media (min-width: 768px) {
@@ -1012,6 +1120,7 @@ html[data-theme="light"] .code-caret {
     font-weight: var(--fw-bold);
     color: var(--color-text);
     margin-bottom: var(--space-2);
+    overflow-wrap: break-word;
 }
 
 .project-card--featured .project-card__title {
@@ -1022,6 +1131,7 @@ html[data-theme="light"] .code-caret {
     color: var(--color-text-muted);
     font-size: var(--fs-sm);
     line-height: var(--lh-normal);
+    overflow-wrap: break-word;
 }
 
 .project-card__timeline {
@@ -1087,6 +1197,7 @@ html[data-theme="light"] .project-card__badge {
     align-items: center;
     gap: var(--space-4);
     margin-top: var(--space-4);
+    min-width: 0;
 }
 
 .tech-list {
@@ -1106,6 +1217,8 @@ html[data-theme="light"] .project-card__badge {
     font-family: var(--font-mono);
     font-size: var(--fs-xs);
     letter-spacing: var(--tracking-wide);
+    max-width: 100%;
+    overflow-wrap: anywhere;
 }
 
 .project-video-modal[hidden] {
@@ -1136,6 +1249,9 @@ html[data-theme="light"] .project-video-modal__backdrop {
 .project-video-modal__shell {
     position: relative;
     width: min(100%, 60rem);
+    max-height: calc(100svh - (var(--container-pad) * 2));
+    overflow-y: auto;
+    overscroll-behavior: contain;
     border-radius: var(--radius-xl);
     border: 1px solid var(--color-line-strong);
     background: var(--color-surface-1);
@@ -1154,11 +1270,14 @@ html[data-theme="light"] .project-video-modal__backdrop {
 .project-video-modal__title {
     font-size: var(--fs-lg);
     color: var(--color-text);
+    min-width: 0;
+    overflow-wrap: break-word;
 }
 
 .project-video-modal__close {
     width: 2.5rem;
     height: 2.5rem;
+    flex-shrink: 0;
     border: 1px solid var(--color-line);
     border-radius: var(--radius-pill);
     background: rgba(255, 255, 255, 0.04);
@@ -1194,6 +1313,7 @@ body.has-project-video-open {
     border-radius: var(--radius-lg);
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid var(--color-line);
+    min-width: 0;
     transition: transform var(--dur-base) var(--ease-out),
         border-color var(--dur-base) var(--ease-out),
         background var(--dur-base) var(--ease-out);
@@ -1215,12 +1335,14 @@ body.has-project-video-open {
     font-weight: var(--fw-semibold);
     color: var(--color-text);
     margin-bottom: var(--space-2);
+    overflow-wrap: break-word;
 }
 
 .feature-card__text {
     color: var(--color-text-muted);
     font-size: var(--fs-sm);
     line-height: var(--lh-normal);
+    overflow-wrap: break-word;
 }
 
 /* ---------- Linha de segurança ---------- */
@@ -1232,6 +1354,7 @@ body.has-project-video-open {
     border-radius: var(--radius-lg);
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid var(--color-line);
+    min-width: 0;
     transition: background var(--dur-base) var(--ease-out),
         border-color var(--dur-base) var(--ease-out),
         transform var(--dur-base) var(--ease-out);
@@ -1258,6 +1381,7 @@ body.has-project-video-open {
     font-weight: var(--fw-semibold);
     color: var(--color-text);
     font-size: var(--fs-base);
+    overflow-wrap: break-word;
 }
 
 .security-row__text {
@@ -1265,6 +1389,7 @@ body.has-project-video-open {
     color: var(--color-text-muted);
     margin-top: var(--space-1);
     line-height: var(--lh-normal);
+    overflow-wrap: break-word;
 }
 
 .security__list {
@@ -1283,6 +1408,7 @@ body.has-project-video-open {
     border-radius: var(--radius-lg);
     background: var(--gradient-surface);
     border: 1px solid var(--color-line);
+    min-width: 0;
 }
 
 .ai-card.is-loading .ai-answer {
@@ -1297,6 +1423,7 @@ body.has-project-video-open {
 .ai-chat__row {
     display: grid;
     gap: var(--space-3);
+    min-width: 0;
 }
 
 .ai-chat__row .btn {
@@ -1318,6 +1445,7 @@ body.has-project-video-open {
     color: var(--color-text-muted);
     line-height: var(--lh-normal);
     white-space: pre-wrap;
+    overflow-wrap: break-word;
 }
 
 .ai-answer.is-error {
@@ -1352,6 +1480,7 @@ body.has-project-video-open {
 .form__row {
     display: grid;
     gap: var(--space-5);
+    min-width: 0;
 }
 
 @media (min-width: 640px) {
@@ -1364,6 +1493,7 @@ body.has-project-video-open {
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
+    min-width: 0;
 }
 
 .field__label {
@@ -1375,6 +1505,7 @@ body.has-project-video-open {
 
 .field__input {
     width: 100%;
+    min-width: 0;
     padding: 0.85rem 1rem;
     border-radius: var(--radius-md);
     background: rgba(255, 255, 255, 0.03);

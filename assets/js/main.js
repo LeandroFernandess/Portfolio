@@ -69,9 +69,18 @@ function projectLinks(links) {
   return el(
     "div",
     { class: "project-card__actions" },
-    links.map((l) =>
-      el("a", { class: `link-arrow${l.muted ? " link-arrow--muted" : ""}`, href: l.href }, localize(l.label))
-    )
+    links.map((l) => {
+      const isExternal = /^https?:\/\//i.test(l.href);
+      return el(
+        "a",
+        {
+          class: `link-arrow${l.muted ? " link-arrow--muted" : ""}`,
+          href: l.href,
+          ...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {}),
+        },
+        localize(l.label)
+      );
+    })
   );
 }
 
