@@ -428,7 +428,10 @@ export function createScrollAnimations() {
   }
 
   /**
-   * Destrói a animação de scroll, removendo listeners e limpando estados. Deve ser chamado para liberar recursos se a animação não for mais necessária (ex.: navegação SPA). Remove os event listeners de scroll e resize, cancela qualquer frame pendente, desconecta o IntersectionObserver e limpa o conjunto ativo. Também remove as propriedades de estilo e referências associadas dos elementos animados.
+   * Destrói a animação de scroll, removendo listeners e limpando estados. 
+   * Deve ser chamado para liberar recursos se a animação não for mais necessária (ex.: navegação SPA). 
+   * Remove os event listeners de scroll e resize, cancela qualquer frame pendente, desconecta o IntersectionObserver e limpa o conjunto ativo. 
+   * Também remove as propriedades de estilo e referências associadas dos elementos animados.
    * @returns {void}
    */
   function destroy() {

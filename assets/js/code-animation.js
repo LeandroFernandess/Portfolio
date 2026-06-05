@@ -62,6 +62,7 @@ function renderStatic(codeEl, codeLines = getHeroCode()) {
         if (i < codeLines.length - 1) codeEl.appendChild(document.createTextNode("\n"));
     });
 }
+
 /**
  * Inicializa a animação do código no hero, configurando o efeito typewriter.
  * @returns {void}

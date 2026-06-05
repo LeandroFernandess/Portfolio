@@ -49,7 +49,8 @@ function applyTheme(theme) {
 }
 
 /**
- * Inicializa a alternância de tema, aplicando o tema armazenado ou o padrão, e configurando os event listeners para os botões de toggle. Também atualiza o tema quando o idioma muda, para garantir que os rótulos estejam sempre corretos. Deve ser chamado após o DOM estar pronto.
+ * Inicializa a alternância de tema, aplicando o tema armazenado ou o padrão, e configurando os event listeners para os botões de toggle.
+ * Também atualiza o tema quando o idioma muda, para garantir que os rótulos estejam sempre corretos. Deve ser chamado após o DOM estar pronto.
  * @returns {void}
  */
 export function initTheme() {

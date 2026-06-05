@@ -14,6 +14,18 @@ const getThemeValue = (name, fallback) => {
     return value || fallback;
 };
 
+/**
+ * Domínios representados como planetas, com propriedades para renderização e descrição.
+ * - `id`: Identificador único do domínio.
+ * - `label`: Rótulo curto para o domínio (string ou objeto i18n).
+ * - `title`: Título descritivo do domínio (objeto i18n).
+ * - `description`: Descrição detalhada do domínio (objeto i18n).
+ * - `color`: Cor hexadecimal para o planeta.
+ * - `orbit`: Distância orbital do planeta em relação ao centro.
+ * - `size`: Tamanho relativo do planeta.
+ * - `speed`: Velocidade de rotação orbital do planeta.
+ * - `phase`: Fase inicial da órbita para posicionamento aleatório.
+ */
 const DOMAINS = [
     {
         id: "python",
@@ -457,7 +469,7 @@ export function createProfessionalSolarSystem(root) {
             setActiveDomain(DOMAINS[DOMAINS.length - 1], { focus: isDomainTarget });
         }
     };
-    
+
     const handleVisibility = () => {
         if (document.visibilityState === "hidden") {
             if (animationFrame) {

@@ -293,6 +293,10 @@ const translations = {
 
 let currentLanguage = DEFAULT_LANGUAGE;
 
+/**
+ * Recupera o idioma armazenado, ou retorna o idioma padrão se não encontrado ou inválido.
+ * @returns {string} - O código do idioma armazenado ou o idioma padrão.
+ */
 function getStoredLanguage() {
     try {
         const language = localStorage.getItem(STORAGE_KEY);
