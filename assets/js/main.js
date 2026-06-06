@@ -103,6 +103,7 @@ function projectThumb(project) {
         alt: t("projects.thumbAlt", { title: localize(project.title) }),
         loading: "lazy",
         decoding: "async",
+        fetchpriority: "low",
       })
     );
     return thumb;

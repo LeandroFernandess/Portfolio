@@ -143,6 +143,26 @@
                         real.</span>
                     <span class="solar-intro__hint" data-i18n="solar.interactionHint">Clique em um planeta ou use as
                         setas do teclado para navegar pela cena.</span>
+
+                    <!-- Navegação touch entre planetas: visível apenas no mobile (CSS). -->
+                    <div class="solar-intro__nav" data-solar-nav role="group" aria-label="Navegação entre planetas"
+                        data-i18n-attr="aria-label:solar.navLabel">
+                        <button type="button" class="solar-intro__nav-btn" data-solar-prev aria-label="Planeta anterior"
+                            data-i18n-attr="aria-label:solar.prev">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 6l-6 6 6 6" />
+                            </svg>
+                        </button>
+                        <div class="solar-intro__dots" data-solar-dots></div>
+                        <button type="button" class="solar-intro__nav-btn" data-solar-next aria-label="Próximo planeta"
+                            data-i18n-attr="aria-label:solar.next">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             </div>
 

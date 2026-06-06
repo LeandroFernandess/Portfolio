@@ -177,8 +177,23 @@ export function createProfessionalSolarSystem(root) {
     const labelEl = root.querySelector("[data-solar-active-label]");
     const titleEl = root.querySelector("[data-solar-active-title]");
     const descriptionEl = root.querySelector("[data-solar-active-description]");
+    const prevBtn = root.querySelector("[data-solar-prev]");
+    const nextBtn = root.querySelector("[data-solar-next]");
+    const dotsContainer = root.querySelector("[data-solar-dots]");
     const mediaQuery = window.matchMedia?.(REDUCED_MOTION_QUERY);
     const isCoarsePointer = Boolean(window.matchMedia?.("(pointer: coarse)")?.matches);
+
+    const dotButtons = dotsContainer
+        ? DOMAINS.map((domain) => {
+            const dot = document.createElement("button");
+            dot.type = "button";
+            dot.className = "solar-intro__dot";
+            dot.dataset.domainId = domain.id;
+            dot.setAttribute("aria-label", localize(domain.label));
+            dotsContainer.append(dot);
+            return dot;
+        })
+        : [];
 
     let THREE = null;
     let scene = null;
@@ -208,6 +223,13 @@ export function createProfessionalSolarSystem(root) {
             button.setAttribute("aria-pressed", String(selected));
             button.setAttribute("tabindex", selected ? "0" : "-1");
             if (focus && selected) button.focus();
+        });
+
+        dotButtons.forEach((dot) => {
+            const selected = dot.dataset.domainId === domain.id;
+            dot.classList.toggle("is-active", selected);
+            if (selected) dot.setAttribute("aria-current", "true");
+            else dot.removeAttribute("aria-current");
         });
 
         planetEntries.forEach((entry) => {
@@ -302,7 +324,8 @@ export function createProfessionalSolarSystem(root) {
 
         const starGeometry = track(new THREE.BufferGeometry());
         const starPositions = [];
-        for (let i = 0; i < 160; i += 1) {
+        const starCount = isCoarsePointer ? 90 : 160;
+        for (let i = 0; i < starCount; i += 1) {
             const radius = 5 + Math.random() * 8;
             const angle = Math.random() * Math.PI * 2;
             starPositions.push(
@@ -320,7 +343,7 @@ export function createProfessionalSolarSystem(root) {
         }));
         scene.add(new THREE.Points(starGeometry, starMaterial));
 
-        const coreGeometry = track(new THREE.SphereGeometry(0.66, 48, 48));
+        const coreGeometry = track(new THREE.SphereGeometry(0.66, isCoarsePointer ? 32 : 48, isCoarsePointer ? 32 : 48));
         const coreMaterial = track(new THREE.MeshStandardMaterial({
             color: palette.coreColor,
             emissive: palette.coreEmissive,
@@ -343,7 +366,7 @@ export function createProfessionalSolarSystem(root) {
         scene.add(coreGlow);
 
         planetEntries = DOMAINS.map((domain) => {
-            const orbitGeometry = track(new THREE.RingGeometry(domain.orbit - 0.004, domain.orbit + 0.004, 160));
+            const orbitGeometry = track(new THREE.RingGeometry(domain.orbit - 0.004, domain.orbit + 0.004, isCoarsePointer ? 72 : 160));
             const orbitMaterial = track(new THREE.MeshBasicMaterial({
                 color: palette.orbitColor,
                 transparent: true,
@@ -354,7 +377,7 @@ export function createProfessionalSolarSystem(root) {
             orbit.rotation.x = Math.PI / 2;
             scene.add(orbit);
 
-            const geometry = track(new THREE.SphereGeometry(domain.size, 32, 32));
+            const geometry = track(new THREE.SphereGeometry(domain.size, isCoarsePointer ? 18 : 32, isCoarsePointer ? 18 : 32));
             const material = track(new THREE.MeshStandardMaterial({
                 color: domain.color,
                 emissive: domain.color,
@@ -446,6 +469,39 @@ export function createProfessionalSolarSystem(root) {
         setActiveDomain(domain);
     };
 
+    const goRelative = (delta) => {
+        const currentIndex = DOMAINS.findIndex((domain) => domain.id === activeDomain.id);
+        const nextIndex = (currentIndex + delta + DOMAINS.length) % DOMAINS.length;
+        setActiveDomain(DOMAINS[nextIndex]);
+    };
+
+    const handlePrev = () => goRelative(-1);
+    const handleNext = () => goRelative(1);
+    const handleDotClick = (event) => {
+        const domain = DOMAINS.find((item) => item.id === event.currentTarget.dataset.domainId);
+        setActiveDomain(domain);
+    };
+
+    let swipeStartX = 0;
+    let swipeStartY = 0;
+    let swipeTracking = false;
+
+    const handleStagePointerDown = (event) => {
+        swipeTracking = true;
+        swipeStartX = event.clientX;
+        swipeStartY = event.clientY;
+    };
+
+    const handleStagePointerUp = (event) => {
+        if (!swipeTracking) return;
+        swipeTracking = false;
+        const dx = event.clientX - swipeStartX;
+        const dy = event.clientY - swipeStartY;
+        if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+            goRelative(dx < 0 ? 1 : -1);
+        }
+    };
+
     const handleKeyDown = (event) => {
         const isDomainTarget = event.target?.matches?.("[data-solar-domain]");
         const isStageTarget = event.target?.matches?.("[data-solar-stage]");
@@ -484,8 +540,13 @@ export function createProfessionalSolarSystem(root) {
     };
 
     const attachListeners = () => {
-        stage?.addEventListener("pointermove", handlePointerMove);
-        stage?.addEventListener("pointerleave", handlePointerLeave);
+        if (isCoarsePointer) {
+            stage?.addEventListener("pointerdown", handleStagePointerDown);
+            stage?.addEventListener("pointerup", handleStagePointerUp);
+        } else {
+            stage?.addEventListener("pointermove", handlePointerMove);
+            stage?.addEventListener("pointerleave", handlePointerLeave);
+        }
         stage?.addEventListener("click", handleClick);
         root.addEventListener("keydown", handleKeyDown);
         document.addEventListener("visibilitychange", handleVisibility);
@@ -498,6 +559,8 @@ export function createProfessionalSolarSystem(root) {
     const removeListeners = () => {
         stage?.removeEventListener("pointermove", handlePointerMove);
         stage?.removeEventListener("pointerleave", handlePointerLeave);
+        stage?.removeEventListener("pointerdown", handleStagePointerDown);
+        stage?.removeEventListener("pointerup", handleStagePointerUp);
         stage?.removeEventListener("click", handleClick);
         root.removeEventListener("keydown", handleKeyDown);
         document.removeEventListener("visibilitychange", handleVisibility);
@@ -569,7 +632,21 @@ export function createProfessionalSolarSystem(root) {
 
     if (fallback) fallback.hidden = true;
     setActiveDomain(DOMAINS[0]);
-    onLanguageChange(() => setActiveDomain(activeDomain));
+
+    // Navegação Anterior/Próximo/dots fica ativa desde a criação — independente
+    // do carregamento assíncrono do Three.js — evitando uma janela morta de
+    // toques sem resposta no mobile enquanto a cena 3D ainda baixa.
+    prevBtn?.addEventListener("click", handlePrev);
+    nextBtn?.addEventListener("click", handleNext);
+    dotButtons.forEach((dot) => dot.addEventListener("click", handleDotClick));
+
+    onLanguageChange(() => {
+        dotButtons.forEach((dot) => {
+            const domain = DOMAINS.find((item) => item.id === dot.dataset.domainId);
+            if (domain) dot.setAttribute("aria-label", localize(domain.label));
+        });
+        setActiveDomain(activeDomain);
+    });
 
     return { start, cleanup };
 }
