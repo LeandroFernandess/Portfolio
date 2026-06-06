@@ -8,6 +8,14 @@ import { localize, onLanguageChange } from "./i18n.js";
 
 const THREE_CDN_URL = "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
+const DIAG_PREFIX = "[portfolio:diag][solar]";
+
+function logSolar(event, details = {}) {
+    console.info(DIAG_PREFIX, event, {
+        now: Math.round(performance.now()),
+        ...details,
+    });
+}
 
 const getThemeValue = (name, fallback) => {
     const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
@@ -209,6 +217,9 @@ export function createProfessionalSolarSystem(root) {
     let disposableObjects = [];
     let resizeObserver = null;
     let lastTime = 0;
+    let webglContextLossCount = 0;
+
+    logSolar("create", { hasStage: Boolean(stage), coarsePointer: isCoarsePointer });
 
     const setActiveDomain = (domain, { focus = false } = {}) => {
         if (!domain) return;
@@ -313,6 +324,22 @@ export function createProfessionalSolarSystem(root) {
         renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isCoarsePointer ? 1.5 : 1.75));
         renderer.outputColorSpace = THREE.SRGBColorSpace;
         stage.append(renderer.domElement);
+        logSolar("webgl:renderer-created", {
+            pixelRatio: renderer.getPixelRatio?.() ?? null,
+            powerPreference: "high-performance",
+            width: Math.round(stage.getBoundingClientRect().width),
+            height: Math.round(stage.getBoundingClientRect().height),
+        });
+
+        renderer.domElement.addEventListener("webglcontextlost", (event) => {
+            webglContextLossCount += 1;
+            logSolar("webgl:context-lost", { count: webglContextLossCount });
+            event.preventDefault();
+        });
+
+        renderer.domElement.addEventListener("webglcontextrestored", () => {
+            logSolar("webgl:context-restored", { count: webglContextLossCount });
+        });
 
         raycaster = new THREE.Raycaster();
         pointer = new THREE.Vector2(10, 10);
@@ -413,6 +440,7 @@ export function createProfessionalSolarSystem(root) {
         resizeObserver = new ResizeObserver(updateRendererSize);
         resizeObserver.observe(stage);
         setActiveDomain(activeDomain);
+        logSolar("scene:built", { planetCount: planetEntries.length, fallbackMode });
     };
 
     const positionPlanets = (elapsed) => {
@@ -528,14 +556,22 @@ export function createProfessionalSolarSystem(root) {
 
     const handleVisibility = () => {
         if (document.visibilityState === "hidden") {
+            logSolar("visibility:hidden", { hasAnimationFrame: Boolean(animationFrame) });
             if (animationFrame) {
                 window.cancelAnimationFrame(animationFrame);
                 animationFrame = 0;
             }
             return;
         }
+        logSolar("visibility:visible", {
+            started,
+            fallbackMode,
+            hasRenderer: Boolean(renderer),
+            hasAnimationFrame: Boolean(animationFrame),
+        });
         if (started && !fallbackMode && renderer && !animationFrame) {
             animate();
+            logSolar("animation:resumed", { lastTime: Number(lastTime.toFixed(3)) });
         }
     };
 
@@ -574,6 +610,7 @@ export function createProfessionalSolarSystem(root) {
         setFallbackMode(true);
         attachListeners();
         setActiveDomain(DOMAINS[0]);
+        logSolar("fallback:start", { reason: "webgl-unavailable-or-import-failed" });
     };
 
     const start = async () => {
@@ -581,6 +618,10 @@ export function createProfessionalSolarSystem(root) {
         started = true;
         activeDomain = DOMAINS[0];
         setActiveDomain(activeDomain);
+        logSolar("start", {
+            supportsWebGL: supportsWebGL(),
+            hasStage: Boolean(stage),
+        });
 
         if (!supportsWebGL() || !stage) {
             startFallback();
@@ -591,11 +632,14 @@ export function createProfessionalSolarSystem(root) {
             setFallbackMode(false);
             THREE = await import(THREE_CDN_URL);
             if (!started) return;
+            logSolar("three:loaded", { version: THREE.REVISION ?? null });
             buildScene();
             attachListeners();
             animate();
+            logSolar("animation:start", { fallbackMode });
         } catch {
             if (!started) return;
+            logSolar("three:load-failed");
             cleanup();
             started = true;
             startFallback();
@@ -603,6 +647,11 @@ export function createProfessionalSolarSystem(root) {
     };
 
     const cleanup = () => {
+        logSolar("cleanup:start", {
+            started,
+            hasRenderer: Boolean(renderer),
+            disposableCount: disposableObjects.length,
+        });
         if (animationFrame) {
             window.cancelAnimationFrame(animationFrame);
             animationFrame = 0;
@@ -628,6 +677,7 @@ export function createProfessionalSolarSystem(root) {
         started = false;
         setFallbackMode(false);
         setActiveDomain(DOMAINS[0]);
+        logSolar("cleanup:done", { webglContextLossCount });
     };
 
     if (fallback) fallback.hidden = true;

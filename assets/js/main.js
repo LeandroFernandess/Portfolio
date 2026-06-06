@@ -20,11 +20,85 @@ import { initAiChat } from "./ai-chat.js";
 import { initTheme } from "./theme.js";
 import { initIntroExperience } from "./intro-experience.js";
 import { initCursorEffect } from "./cursor-effect.js";
-import { hideLoader, flashLoader } from "./loading-overlay.js";
+import { hideLoader, flashLoader, ensureLoaderHidden } from "./loading-overlay.js";
 
 const scrollAnimations = createScrollAnimations();
 let openProjectVideoModal = () => { };
 let projectVideoModalInitialized = false;
+const DIAG_PREFIX = "[portfolio:diag][app]";
+
+/**
+ * Registra eventos de diagnóstico da aplicação.
+ * @param {string} event Nome do evento.
+ * @param {Object} [details] Detalhes adicionais para diagnóstico.
+ */
+function logApp(event, details = {}) {
+  console.info(DIAG_PREFIX, event, {
+    now: Math.round(performance.now()),
+    visibilityState: document.visibilityState,
+    readyState: document.readyState,
+    ...details,
+  });
+}
+
+/**
+ * Configura diagnósticos de ciclo de vida da página.
+ * @returns {Object} Funções para marcar início e fim de retomada e obter tempo oculto.
+ */
+function setupLifecycleDiagnostics() {
+  const navigationEntry = performance.getEntriesByType("navigation")[0];
+  const state = {
+    hiddenAt: 0,
+    lastResumeStartedAt: 0,
+  };
+
+  logApp("boot", {
+    navigationType: navigationEntry?.type ?? null,
+    activationStart: navigationEntry?.activationStart ?? null,
+    wasDiscarded: document.wasDiscarded ?? false,
+  });
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") {
+      state.hiddenAt = performance.now();
+    }
+
+    logApp("visibilitychange", {
+      hiddenFor: state.hiddenAt ? Math.round(performance.now() - state.hiddenAt) : 0,
+    });
+  });
+
+  window.addEventListener("pageshow", (event) => {
+    state.lastResumeStartedAt = performance.now();
+    logApp("pageshow", {
+      persisted: event.persisted,
+      hiddenFor: state.hiddenAt ? Math.round(performance.now() - state.hiddenAt) : 0,
+    });
+  });
+
+  window.addEventListener("pagehide", (event) => {
+    logApp("pagehide", {
+      persisted: event.persisted,
+    });
+  });
+
+  return {
+    markResumeStart(reason, details = {}) {
+      state.lastResumeStartedAt = performance.now();
+      logApp("resume:start", { reason, ...details });
+    },
+    markResumeSettled(reason, details = {}) {
+      logApp("resume:settled", {
+        reason,
+        duration: Math.round(performance.now() - state.lastResumeStartedAt),
+        ...details,
+      });
+    },
+    getHiddenFor() {
+      return state.hiddenAt ? Math.round(performance.now() - state.hiddenAt) : 0;
+    },
+  };
+}
 
 
 /**
@@ -172,6 +246,10 @@ function initProjectVideoModal() {
 
   const resetVideo = () => {
     if (!videoEl) return;
+    logApp("video:reset", {
+      currentSrc: videoEl.currentSrc || videoEl.getAttribute("src") || null,
+      readyState: videoEl.readyState,
+    });
     videoEl.pause();
     videoEl.removeAttribute("src");
     videoEl.load();
@@ -190,6 +268,10 @@ function initProjectVideoModal() {
 
     previousFocus = document.activeElement;
     titleEl.textContent = projectTitle || t("projectModal.fallbackTitle");
+    logApp("video:open", {
+      projectVideo,
+      projectTitle: projectTitle || null,
+    });
     videoEl.src = projectVideo;
     videoEl.load();
     dialog.hidden = false;
@@ -199,6 +281,17 @@ function initProjectVideoModal() {
     const playPromise = videoEl.play();
     if (playPromise?.catch) playPromise.catch(() => { });
   };
+
+  ["loadstart", "loadedmetadata", "loadeddata", "canplay", "playing", "pause", "emptied", "suspend"].forEach((eventName) => {
+    videoEl?.addEventListener(eventName, () => {
+      logApp(`video:${eventName}`, {
+        currentSrc: videoEl.currentSrc || videoEl.getAttribute("src") || null,
+        readyState: videoEl.readyState,
+        networkState: videoEl.networkState,
+        paused: videoEl.paused,
+      });
+    });
+  });
 
   closeBtn?.addEventListener("click", close);
   backdrop?.addEventListener("click", close);
@@ -369,11 +462,91 @@ function setupResumeHandling() {
   const coarsePointer = window.matchMedia?.("(pointer: coarse)");
   const isMobile = () => Boolean(coarsePointer?.matches);
   const RESUME_THRESHOLD_MS = 1200;
+  const RESUME_DEDUPE_WINDOW_MS = 900;
   let hiddenAt = 0;
+  const diagnostics = setupLifecycleDiagnostics();
+  const resumeState = {
+    lastHandledAt: 0,
+    lastSource: "",
+    lastStrategy: "",
+  };
 
-  const resume = () => {
-    flashLoader({ messageKey: "loader.resuming" });
+  const getResumeContext = () => {
+    const introDialog = document.querySelector("#professionalSolarSystem");
+    const videoDialog = document.querySelector("#projectVideoModal");
+    const videoEl = document.querySelector("#projectVideoPlayer");
+    const loaderEl = document.querySelector("[data-app-loader]");
+    const introOpen = document.body.classList.contains("has-intro-open") || Boolean(introDialog && !introDialog.hidden);
+    const videoOpen = document.body.classList.contains("has-project-video-open") || Boolean(videoDialog && !videoDialog.hidden);
+    const videoActive = Boolean(
+      videoOpen &&
+      videoEl &&
+      (videoEl.currentSrc || videoEl.getAttribute("src"))
+    );
+
+    return {
+      introOpen,
+      videoOpen,
+      videoActive,
+      loaderActive: Boolean(loaderEl?.classList.contains("is-active")),
+      needsHeavyResume: introOpen || videoOpen || videoActive,
+    };
+  };
+
+  const settleResume = (reason, details = {}) => {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        diagnostics.markResumeSettled(reason, {
+          activeAnimations: document.querySelectorAll("[data-animate]").length,
+          ...details,
+        });
+      });
+    });
+  };
+
+  const handlePageResume = (source, options = {}) => {
+    const hiddenFor = options.hiddenFor ?? diagnostics.getHiddenFor();
+    const context = getResumeContext();
+    const strategy = options.forceHeavyResume || context.needsHeavyResume ? "heavy" : "light";
+    const now = performance.now();
+
+    if (now - resumeState.lastHandledAt < RESUME_DEDUPE_WINDOW_MS) {
+      logApp("resume:deduped", {
+        source,
+        strategy,
+        elapsed: Math.round(now - resumeState.lastHandledAt),
+        persisted: Boolean(options.persisted),
+        previousSource: resumeState.lastSource,
+        previousStrategy: resumeState.lastStrategy,
+      });
+      if (strategy === "light") ensureLoaderHidden({ reason: `resume-deduped:${source}` });
+      return;
+    }
+
+    resumeState.lastSource = source;
+    resumeState.lastStrategy = strategy;
+    resumeState.lastHandledAt = now;
+
+    diagnostics.markResumeStart(source, {
+      isMobile: isMobile(),
+      hiddenFor,
+      source,
+      strategy,
+      persisted: Boolean(options.persisted),
+      introOpen: context.introOpen,
+      videoOpen: context.videoOpen,
+      videoActive: context.videoActive,
+      loaderActive: context.loaderActive,
+    });
+
+    if (strategy === "heavy") {
+      flashLoader({ messageKey: "loader.resuming", immediate: true });
+    } else {
+      ensureLoaderHidden({ reason: `resume-light:${source}` });
+    }
+
     scrollAnimations.refresh();
+    settleResume(source, { strategy, hiddenFor });
   };
 
   document.addEventListener("visibilitychange", () => {
@@ -382,11 +555,31 @@ function setupResumeHandling() {
       return;
     }
     if (!isMobile()) return;
-    if (performance.now() - hiddenAt > RESUME_THRESHOLD_MS) resume();
+    const hiddenFor = performance.now() - hiddenAt;
+    logApp("resume:visibility-check", {
+      hiddenFor: Math.round(hiddenFor),
+      threshold: RESUME_THRESHOLD_MS,
+      isMobile: isMobile(),
+    });
+    if (hiddenFor > RESUME_THRESHOLD_MS) {
+      handlePageResume("visibilitychange", { hiddenFor: Math.round(hiddenFor) });
+    }
   });
 
   window.addEventListener("pageshow", (event) => {
-    if (event.persisted && isMobile()) resume();
+    logApp("resume:pageshow-check", {
+      persisted: event.persisted,
+      isMobile: isMobile(),
+    });
+    if (event.persisted && isMobile()) {
+      handlePageResume("pageshow", {
+        persisted: true,
+        hiddenFor: Math.round(performance.now() - hiddenAt),
+      });
+      return;
+    }
+
+    if (!event.persisted) ensureLoaderHidden({ reason: "pageshow:fresh" });
   });
 }
 
@@ -395,6 +588,7 @@ function setupResumeHandling() {
  * @returns {void}
  */
 function init() {
+  logApp("init:start");
   initI18n();
   initTheme();
   initProjectVideoModal();
@@ -419,6 +613,7 @@ function init() {
 
   setupResumeHandling();
   dismissInitialLoader();
+  logApp("init:done");
 }
 
 if (document.readyState === "loading") {

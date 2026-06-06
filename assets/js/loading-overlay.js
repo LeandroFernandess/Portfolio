@@ -17,12 +17,25 @@ import { t } from "./i18n.js";
 
 const MIN_VISIBLE_MS = 420;
 const HIDE_FALLBACK_MS = 700;
+const DIAG_PREFIX = "[portfolio:diag][loader]";
 
 let overlay = null;
 let labelEl = null;
 let shownAt = 0;
 let hideTimer = 0;
 let removeTimer = 0;
+
+/**
+ * Registra eventos de diagnóstico do loader.
+ * @param {string} event Nome do evento.
+ * @param {Object} [details] Detalhes adicionais para diagnóstico.
+ */
+function logLoader(event, details = {}) {
+    console.info(DIAG_PREFIX, event, {
+        now: Math.round(performance.now()),
+        ...details,
+    });
+}
 
 
 /**
@@ -70,7 +83,11 @@ export function showLoader({ messageKey } = {}) {
         void node.offsetWidth;
         node.classList.add("is-active");
         shownAt = performance.now();
+        logLoader("show", { messageKey: messageKey ?? null, hidden: node.hidden });
+        return;
     }
+
+    logLoader("show:noop", { messageKey: messageKey ?? null, hidden: node.hidden });
 }
 
 /**
@@ -84,21 +101,46 @@ export function hideLoader({ immediate = false } = {}) {
     if (!node || !node.classList.contains("is-active")) return;
 
     const finish = () => {
+        const visibleFor = Math.round(performance.now() - shownAt);
         node.classList.remove("is-active");
+        logLoader("hide:finish", { immediate, visibleFor });
         removeTimer = window.setTimeout(() => {
-            if (!node.classList.contains("is-active")) node.hidden = true;
+            if (!node.classList.contains("is-active")) {
+                node.hidden = true;
+                logLoader("hide:hidden", { immediate });
+            }
         }, HIDE_FALLBACK_MS);
     };
 
     clearTimers();
     if (immediate) {
+        logLoader("hide:start", { immediate: true });
         finish();
         return;
     }
 
     const elapsed = performance.now() - shownAt;
     const wait = Math.max(0, MIN_VISIBLE_MS - elapsed);
+    logLoader("hide:start", { immediate: false, elapsed: Math.round(elapsed), wait: Math.round(wait) });
     hideTimer = window.setTimeout(finish, wait);
+}
+
+/**
+ * Garante que o overlay fique oculto imediatamente, limpando timers e
+ * qualquer classe residual deixada por uma retomada/restauração.
+ * @param {Object} [options]
+ * @param {string|null} [options.reason] Contexto para diagnóstico.
+ * @returns {void}
+ */
+export function ensureLoaderHidden({ reason = null } = {}) {
+    const node = getOverlay();
+    if (!node) return;
+
+    clearTimers();
+    node.classList.remove("is-active");
+    node.hidden = true;
+    shownAt = 0;
+    logLoader("force-hide", { reason });
 }
 
 /**
@@ -108,7 +150,8 @@ export function hideLoader({ immediate = false } = {}) {
  * @param {string} [options.messageKey] Chave i18n para o rótulo.
  * @returns {void}
  */
-export function flashLoader({ messageKey = "loader.resuming" } = {}) {
+export function flashLoader({ messageKey = "loader.resuming", immediate = false } = {}) {
+    logLoader("flash", { messageKey, immediate });
     showLoader({ messageKey });
-    hideLoader();
+    hideLoader({ immediate });
 }
