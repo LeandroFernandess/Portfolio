@@ -294,7 +294,7 @@ const translations = {
             fallbackTitle: "Project video",
         },
         footer: {
-            text: "Leandro. Built with code and attention to detail.",
+            text: "Leandro. Built with commitment and attention to detail.",
         },
     },
 };
