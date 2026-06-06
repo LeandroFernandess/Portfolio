@@ -373,6 +373,21 @@ html[data-theme="light"] .solar-intro__status {
     line-height: 1.55;
 }
 
+.solar-intro__hint--touch {
+    display: none;
+}
+
+@media (max-width: 760px),
+(pointer: coarse) {
+    .solar-intro__hint--desktop {
+        display: none;
+    }
+
+    .solar-intro__hint--touch {
+        display: block;
+    }
+}
+
 .solar-intro__nav {
     display: none;
     align-items: center;
@@ -423,14 +438,14 @@ html[data-theme="light"] .solar-intro__nav-btn {
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    gap: 0.1rem;
+    gap: 0;
 }
 
 .solar-intro__dot {
     display: grid;
     place-items: center;
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 2.75rem;
+    height: 2.75rem;
     padding: 0;
     border: 0;
     border-radius: 50%;

@@ -100,6 +100,8 @@ function projectThumb(project) {
       el("img", {
         class: "project-card__thumb-image",
         src: project.image,
+        ...(project.imageSrcset ? { srcset: project.imageSrcset } : {}),
+        ...(project.imageSizes ? { sizes: project.imageSizes } : {}),
         alt: t("projects.thumbAlt", { title: localize(project.title) }),
         loading: "lazy",
         decoding: "async",
