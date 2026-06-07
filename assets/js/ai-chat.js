@@ -23,12 +23,15 @@ export function initAiChat() {
     const answerEl = document.querySelector("#aiAnswer");
     const initialAnswer = () => t("ai.initial");
     let requestId = 0;
+    let thinkingEl = null;
 
     const setLoading = (loading) => {
+        if (input) input.disabled = loading;
         if (submitBtn) submitBtn.disabled = loading;
         if (resetBtn) resetBtn.disabled = loading;
         form.classList.toggle("is-loading", loading);
         card?.classList.toggle("is-loading", loading);
+        answerEl?.setAttribute("aria-busy", String(loading));
     };
 
     const setStatus = (message, kind = "info") => {
@@ -41,9 +44,66 @@ export function initAiChat() {
 
     const setAnswer = (message, kind = "default") => {
         if (!answerEl) return;
-        answerEl.textContent = message;
+        if (thinkingEl?.isConnected) thinkingEl.remove();
+        thinkingEl = null;
+        answerEl.replaceChildren(document.createTextNode(message));
         answerEl.classList.toggle("is-error", kind === "error");
         answerEl.classList.toggle("is-empty", kind === "empty");
+        answerEl.classList.toggle("is-thinking", false);
+    };
+
+    const setThinkingAnswer = () => {
+        if (!answerEl) return;
+        if (thinkingEl?.isConnected) return;
+
+        const bubble = document.createElement("span");
+        bubble.className = "ai-thinking";
+        bubble.setAttribute("role", "status");
+        bubble.setAttribute("aria-label", t("ai.loadingStatus"));
+
+        const badge = document.createElement("span");
+        badge.className = "ai-thinking__badge";
+        badge.setAttribute("aria-hidden", "true");
+
+        const pulse = document.createElement("span");
+        pulse.className = "ai-thinking__pulse";
+        const badgeLabel = document.createElement("span");
+        badgeLabel.className = "ai-thinking__badge-label";
+        badgeLabel.textContent = "AI";
+        badge.append(pulse, badgeLabel);
+
+        const content = document.createElement("span");
+        content.className = "ai-thinking__content";
+
+        const line = document.createElement("span");
+        line.className = "ai-thinking__line";
+
+        const text = document.createElement("span");
+        text.className = "ai-thinking__text";
+        text.textContent = t("ai.loadingStatus").replace(/\.+$/, "");
+
+        const dots = document.createElement("span");
+        dots.className = "ai-thinking__dots";
+        dots.setAttribute("aria-hidden", "true");
+        for (let index = 0; index < 3; index += 1) {
+            const dot = document.createElement("span");
+            dot.className = "ai-thinking__dot";
+            dots.append(dot);
+        }
+
+        const detail = document.createElement("span");
+        detail.className = "ai-thinking__detail";
+        detail.textContent = t("ai.loadingAnswer");
+
+        line.append(text, dots);
+        content.append(line, detail);
+        bubble.append(badge, content);
+
+        if (thinkingEl?.isConnected) thinkingEl.remove();
+        thinkingEl = bubble;
+        answerEl.replaceChildren(bubble);
+        answerEl.classList.remove("is-error", "is-empty");
+        answerEl.classList.add("is-thinking");
     };
 
     const resetConversation = () => {
@@ -58,6 +118,12 @@ export function initAiChat() {
     setAnswer(initialAnswer(), "empty");
     resetBtn?.addEventListener("click", resetConversation);
     onLanguageChange(() => {
+        if (thinkingEl?.isConnected) {
+            thinkingEl.remove();
+            thinkingEl = null;
+            setThinkingAnswer();
+            return;
+        }
         if (answerEl?.classList.contains("is-empty")) {
             setAnswer(initialAnswer(), "empty");
         }
@@ -65,6 +131,7 @@ export function initAiChat() {
 
     form.addEventListener("submit", async (event) => {
         event.preventDefault();
+        if (form.classList.contains("is-loading")) return;
 
         const message = input?.value.trim() || "";
         if (message.length < 2) {
@@ -78,7 +145,7 @@ export function initAiChat() {
         requestId = currentRequest;
         setLoading(true);
         setStatus(t("ai.loadingStatus"));
-        setAnswer(t("ai.loadingAnswer"), "empty");
+        setThinkingAnswer();
 
         try {
             const response = await fetch("/api/chat", {

@@ -1525,6 +1525,96 @@ body.has-project-video-open {
     overflow-wrap: break-word;
 }
 
+.ai-answer.is-thinking {
+    color: var(--color-text);
+}
+
+.ai-thinking {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--space-3);
+    align-items: start;
+}
+
+.ai-thinking__badge {
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    border: 1px solid rgba(124, 156, 255, 0.22);
+    background: radial-gradient(circle at 30% 30%, rgba(124, 156, 255, 0.26), rgba(255, 255, 255, 0.03));
+    box-shadow: inset 0 0 0.8rem rgba(124, 156, 255, 0.12);
+    overflow: hidden;
+}
+
+.ai-thinking__badge-label {
+    position: relative;
+    z-index: 1;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: var(--fw-semibold);
+    letter-spacing: 0.08em;
+    color: var(--color-text);
+}
+
+.ai-thinking__pulse {
+    position: absolute;
+    inset: 0.4rem;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(124, 156, 255, 0.42), rgba(124, 156, 255, 0));
+    animation: ai-thinking-pulse 2.2s ease-in-out infinite;
+}
+
+.ai-thinking__content {
+    display: grid;
+    gap: 0.35rem;
+    min-width: 0;
+}
+
+.ai-thinking__line {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-width: 0;
+}
+
+.ai-thinking__text {
+    color: var(--color-text);
+    font-weight: var(--fw-medium);
+}
+
+.ai-thinking__detail {
+    color: var(--color-text-dim);
+    font-size: var(--fs-sm);
+    line-height: 1.6;
+}
+
+.ai-thinking__dots {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.26rem;
+}
+
+.ai-thinking__dot {
+    width: 0.36rem;
+    height: 0.36rem;
+    border-radius: 50%;
+    background: rgba(124, 156, 255, 0.9);
+    opacity: 0.32;
+    transform: translateY(0);
+    animation: ai-thinking-dot 1.1s ease-in-out infinite;
+}
+
+.ai-thinking__dot:nth-child(2) {
+    animation-delay: 0.16s;
+}
+
+.ai-thinking__dot:nth-child(3) {
+    animation-delay: 0.32s;
+}
+
 .ai-answer.is-error {
     border-color: rgba(248, 113, 113, 0.42);
     color: var(--color-danger);
@@ -1542,6 +1632,15 @@ body.has-project-video-open {
 
     .ai-chat__row .btn {
         width: auto;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ai-thinking__pulse,
+    .ai-thinking__dot {
+        animation: none;
+        opacity: 0.72;
+        transform: none;
     }
 }
 
