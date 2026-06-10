@@ -52,7 +52,7 @@ const readBody = async (req) => {
   return raw ? JSON.parse(raw) : {};
 };
 
-const buildEmailHtml = ({ name, email, message, sentAt }) => `
+const buildEmailHtml = ({ name, email, phone, message, sentAt }) => `
   <div style="font-family:Arial,sans-serif;line-height:1.6;color:#111827;max-width:640px">
     <h1 style="font-size:22px;margin:0 0 16px;color:#111827">Novo contato pelo portfólio</h1>
     <p style="margin:0 0 24px;color:#4b5563">Uma nova mensagem foi enviada pelo formulário de contato.</p>
@@ -64,6 +64,10 @@ const buildEmailHtml = ({ name, email, message, sentAt }) => `
       <tr>
         <td style="padding:10px 12px;background:#f9fafb;border:1px solid #e5e7eb;font-weight:bold">E-mail</td>
         <td style="padding:10px 12px;border:1px solid #e5e7eb">${email}</td>
+      </tr>
+      <tr>
+        <td style="padding:10px 12px;background:#f9fafb;border:1px solid #e5e7eb;font-weight:bold">Telefone</td>
+        <td style="padding:10px 12px;border:1px solid #e5e7eb">${phone}</td>
       </tr>
       <tr>
         <td style="padding:10px 12px;background:#f9fafb;border:1px solid #e5e7eb;font-weight:bold">Data/Hora</td>
@@ -96,6 +100,7 @@ module.exports = async function handler(req, res) {
 
     const name = escapeHtml(body.name);
     const email = String(body.email ?? "").trim();
+    const phone = escapeHtml(body.phone).trim() || "Não informado";
     const message = escapeHtml(body.message);
 
     if (name.length < 2 || name.length > 80) {
@@ -134,7 +139,7 @@ module.exports = async function handler(req, res) {
         to,
         reply_to: email,
         subject: `Novo contato - ${name}`,
-        html: buildEmailHtml({ name, email: escapeHtml(email), message, sentAt }),
+        html: buildEmailHtml({ name, email: escapeHtml(email), phone, message, sentAt }),
       }),
     });
 

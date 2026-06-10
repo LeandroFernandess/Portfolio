@@ -14,6 +14,25 @@ import { t } from "./i18n.js";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /**
+ * Formata um número de telefone.
+ * @param {string} value - O valor do telefone a ser formatado.
+ * @returns {string} - O telefone formatado.
+ */
+const formatPhone = (value) => {
+    const digits = String(value ?? "").replace(/\D/g, "").slice(0, 11);
+    if (!digits) return "";
+
+    const area = digits.slice(0, 2);
+    const rest = digits.slice(2);
+
+    if (digits.length <= 10) {
+        return `(${area}) ${rest.slice(0, 4)}${rest.length > 4 ? `-${rest.slice(4, 8)}` : ""}`.trim();
+    }
+
+    return `(${area}) ${rest.slice(0, 5)}-${rest.slice(5, 9)}`.trim();
+};
+
+/**
  * Inicializa o formulário de contato, configurando validação e envio.
  * @returns {void}
  */
@@ -21,6 +40,7 @@ export function initContact() {
     const form = document.querySelector("#contactForm");
     if (!form) return;
 
+    const phoneInput = form.elements.phone;
     const submitBtn = form.querySelector("#submitBtn");
     const statusEl = form.querySelector("#formStatus");
     const btnLabel = submitBtn?.querySelector(".btn-label");
@@ -72,6 +92,13 @@ export function initContact() {
         form.elements[n]?.addEventListener("input", () => setError(n, ""));
     });
 
+    phoneInput?.addEventListener("input", () => {
+        const formatted = formatPhone(phoneInput.value);
+        if (phoneInput.value !== formatted) {
+            phoneInput.value = formatted;
+        }
+    });
+
     form.addEventListener("submit", async (event) => {
         event.preventDefault();
         clearErrors();
@@ -85,6 +112,7 @@ export function initContact() {
         const data = {
             name: form.elements.name.value.trim(),
             email: form.elements.email.value.trim(),
+            phone: formatPhone(form.elements.phone.value),
             message: form.elements.message.value.trim(),
         };
 
