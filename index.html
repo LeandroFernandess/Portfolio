@@ -27,21 +27,6 @@
     <meta name="description" data-i18n-attr="content:meta.description"
         content="Portfólio de Leandro — Desenvolvedor Full Stack. Projetos, arquitetura limpa e segurança em foco." />
     <title data-i18n="meta.title">Leandro — Developer Portfolio</title>
-
-    <!-- Bootstrap mínimo antes do CSS/JS principal para evitar flash de tema/idioma. -->
-    <script>
-        document.documentElement.classList.remove("no-js");
-        try {
-            const storedTheme = localStorage.getItem("portfolioTheme");
-            document.documentElement.dataset.theme = storedTheme === "light" ? "light" : "dark";
-            const storedLanguage = localStorage.getItem("portfolioLanguage");
-            document.documentElement.lang = storedLanguage === "en-US" ? "en-US" : "pt-BR";
-        } catch {
-            document.documentElement.dataset.theme = "dark";
-            document.documentElement.lang = "pt-BR";
-        }
-    </script>
-
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet"
@@ -587,6 +572,19 @@
 
     <!-- App como ES module: importa data.js e os módulos de comportamento -->
     <script type="module" src="assets/js/main.js"></script>
+    <!-- Bootstrap mínimo antes do CSS/JS principal para evitar flash de tema/idioma. -->
+    <script>
+        document.documentElement.classList.remove("no-js");
+        try {
+            const storedTheme = localStorage.getItem("portfolioTheme");
+            document.documentElement.dataset.theme = storedTheme === "light" ? "light" : "dark";
+            const storedLanguage = localStorage.getItem("portfolioLanguage");
+            document.documentElement.lang = storedLanguage === "en-US" ? "en-US" : "pt-BR";
+        } catch {
+            document.documentElement.dataset.theme = "dark";
+            document.documentElement.lang = "pt-BR";
+        }
+    </script>
 </body>
 
 </html>
