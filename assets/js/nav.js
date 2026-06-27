@@ -17,8 +17,21 @@ export function initNav() {
     const mobileMenu = document.querySelector("#mobileMenu");
 
     if (nav) {
-        const onScroll = () => nav.classList.toggle("is-scrolled", window.scrollY > 12);
-        onScroll();
+        let ticking = false;
+        let scrolled = null;
+        const updateScrolledState = () => {
+            ticking = false;
+            const next = window.scrollY > 12;
+            if (next === scrolled) return;
+            scrolled = next;
+            nav.classList.toggle("is-scrolled", next);
+        };
+        const onScroll = () => {
+            if (ticking) return;
+            ticking = true;
+            requestAnimationFrame(updateScrolledState);
+        };
+        updateScrolledState();
         window.addEventListener("scroll", onScroll, { passive: true });
     }
 

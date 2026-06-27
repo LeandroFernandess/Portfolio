@@ -179,9 +179,16 @@ export function createScrollAnimations() {
   let rafId = 0;
   let heroIntroActive = window.scrollY <= 4;
   let heroIntroStartedAt = 0;
+  let viewportHeight = window.innerHeight;
+  let heroHeight = viewportHeight;
 
   const ambient = document.querySelector(".ambient");
   const heroSection = document.querySelector("#home");
+
+  function updateMeasurements() {
+    viewportHeight = window.innerHeight;
+    heroHeight = heroSection?.getBoundingClientRect().height || viewportHeight;
+  }
 
   /**
    * Coleta os elementos a animar e as seções com metáforas. Para cada elemento
@@ -314,8 +321,7 @@ export function createScrollAnimations() {
    */
   function applyParallax(scrollY) {
     if (!ambient || !heroSection) return;
-    const heroH = heroSection.offsetHeight || window.innerHeight;
-    const t = clamp(scrollY / heroH);
+    const t = clamp(scrollY / heroHeight);
     const offset = (t * 2 - 1) * PARALLAX_RANGE; // -20 -> +20
     ambient.style.transform = `translate3d(0, ${offset.toFixed(2)}px, 0)`;
   }
@@ -326,8 +332,6 @@ export function createScrollAnimations() {
    * @returns {void}
    */
   function frame(now = performance.now()) {
-    const vh = window.innerHeight;
-
     const measured = [];
     active.forEach((item) => {
       measured.push([item, item.el.getBoundingClientRect()]);
@@ -339,10 +343,10 @@ export function createScrollAnimations() {
     const scrollY = window.scrollY;
 
     for (const [item, rect] of measured) {
-      applyItem(item, travelProgress(rect, vh, item.delay));
+      applyItem(item, travelProgress(rect, viewportHeight, item.delay));
     }
     for (const [m, rect] of metaMeasured) {
-      applyMetaphor(m, getMetaphorProgress(m, rect, vh, now));
+      applyMetaphor(m, getMetaphorProgress(m, rect, viewportHeight, now));
     }
     applyParallax(scrollY);
 
@@ -408,6 +412,7 @@ export function createScrollAnimations() {
    */
   function init() {
     collect();
+    updateMeasurements();
 
     if (nativeSupported) {
       document.documentElement.classList.add("scroll-native");
@@ -421,7 +426,7 @@ export function createScrollAnimations() {
     setupObserver();
 
     window.addEventListener("scroll", requestFrame, { passive: true });
-    window.addEventListener("resize", requestFrame, { passive: true });
+    window.addEventListener("resize", handleResize, { passive: true });
 
     requestFrame();
     return api;
@@ -436,7 +441,7 @@ export function createScrollAnimations() {
    */
   function destroy() {
     window.removeEventListener("scroll", requestFrame);
-    window.removeEventListener("resize", requestFrame);
+    window.removeEventListener("resize", handleResize);
     if (rafId) cancelAnimationFrame(rafId);
     if (io) io.disconnect();
     active.clear();
@@ -459,6 +464,7 @@ export function createScrollAnimations() {
     if (io) io.disconnect();
     active.clear();
     collect();
+    updateMeasurements();
     if (nativeSupported) {
       document.documentElement.classList.add("scroll-native");
     }
@@ -473,6 +479,11 @@ export function createScrollAnimations() {
   onLanguageChange(() => {
     if (metaphors.length) refresh();
   });
+
+  function handleResize() {
+    updateMeasurements();
+    requestFrame();
+  }
 
   const api = { init, destroy, refresh };
   return api;

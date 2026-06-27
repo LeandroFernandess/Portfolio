@@ -4,7 +4,6 @@
  * Controla primeiro acesso, replay, fechamento e persistência.
  */
 
-import { createProfessionalSolarSystem } from "./professional-solar-system.js";
 import { showLoader, hideLoader } from "./loading-overlay.js";
 
 const STORAGE_KEY = "portfolioIntroSeen";
@@ -19,10 +18,21 @@ export function initIntroExperience() {
     if (!dialog) return;
 
     const finishBtn = dialog.querySelector("[data-solar-finish]");
-    const solarSystem = createProfessionalSolarSystem(dialog);
     const coarsePointer = window.matchMedia?.("(pointer: coarse)");
+    let solarSystem = null;
+    let solarSystemPromise = null;
     let previousFocus = null;
     let active = false;
+
+    const loadSolarSystem = () => {
+        if (!solarSystemPromise) {
+            solarSystemPromise = import("./professional-solar-system.js").then(({ createProfessionalSolarSystem }) => {
+                solarSystem = createProfessionalSolarSystem(dialog);
+                return solarSystem;
+            });
+        }
+        return solarSystemPromise;
+    };
 
     const hasSeenIntro = () => {
         try {
@@ -40,12 +50,14 @@ export function initIntroExperience() {
         }
     };
 
-    const open = () => {
+    const open = async () => {
         previousFocus = document.activeElement;
         dialog.hidden = false;
         document.body.classList.add("has-intro-open");
         if (!active) {
-            solarSystem.start();
+            const system = await loadSolarSystem();
+            if (dialog.hidden) return;
+            system.start();
             active = true;
         }
         (dialog.querySelector("[data-solar-stage]") ?? finishBtn)?.focus();
@@ -70,7 +82,7 @@ export function initIntroExperience() {
 
         requestAnimationFrame(() =>
             requestAnimationFrame(() => {
-                solarSystem.cleanup();
+                solarSystem?.cleanup();
                 active = false;
                 if (wantsMask) hideLoader();
             })

@@ -14,12 +14,7 @@ import { projects, architecture, security, skills } from "./data.js";
 import { initI18n, localize, onLanguageChange, t } from "./i18n.js";
 import { initNav } from "./nav.js";
 import { createScrollAnimations } from "./scroll-animations.js";
-import { initCodeAnimation } from "./code-animation.js";
-import { initContact } from "./contact.js";
-import { initAiChat } from "./ai-chat.js";
 import { initTheme } from "./theme.js";
-import { initIntroExperience } from "./intro-experience.js";
-import { initCursorEffect } from "./cursor-effect.js";
 import { hideLoader, flashLoader, ensureLoaderHidden } from "./loading-overlay.js";
 import { debugLog } from "./debug.js";
 
@@ -33,6 +28,77 @@ function logApp(event, details = {}) {
     readyState: document.readyState,
     ...details,
   });
+}
+
+const runWhenIdle = (task, timeout = 1800) => {
+  if ("requestIdleCallback" in window) {
+    window.requestIdleCallback(task, { timeout });
+    return;
+  }
+  window.setTimeout(task, 1);
+};
+
+function initLazyInteractionModule({ selector, events, importer, init, idle = true }) {
+  const roots = Array.from(document.querySelectorAll(selector));
+  if (!roots.length) return;
+
+  let loadPromise = null;
+  const load = () => {
+    if (!loadPromise) {
+      loadPromise = importer()
+        .then((module) => {
+          module[init]?.();
+          return module;
+        })
+        .catch((error) => {
+          logApp("lazy-module:error", { selector, message: error?.message ?? String(error) });
+          throw error;
+        });
+    }
+    return loadPromise;
+  };
+
+  const onFirstInteraction = () => {
+    roots.forEach((root) => {
+      events.forEach((eventName) => root.removeEventListener(eventName, onFirstInteraction));
+    });
+    load();
+  };
+
+  roots.forEach((root) => {
+    events.forEach((eventName) => {
+      const options = eventName === "submit" ? { once: true } : { once: true, passive: true };
+      root.addEventListener(eventName, onFirstInteraction, options);
+    });
+  });
+
+  if (idle) runWhenIdle(load, 3200);
+}
+
+function initDeferredModules() {
+  runWhenIdle(() => {
+    import("./code-animation.js").then(({ initCodeAnimation }) => initCodeAnimation());
+  }, 1200);
+
+  initLazyInteractionModule({
+    selector: "#contactForm",
+    events: ["focusin", "pointerdown", "submit"],
+    importer: () => import("./contact.js"),
+    init: "initContact",
+  });
+
+  initLazyInteractionModule({
+    selector: "#aiChatForm",
+    events: ["focusin", "pointerdown", "submit"],
+    importer: () => import("./ai-chat.js"),
+    init: "initAiChat",
+  });
+
+  import("./intro-experience.js").then(({ initIntroExperience }) => initIntroExperience());
+
+  runWhenIdle(() => {
+    import("./cursor-effect.js").then(({ initCursorEffect }) => initCursorEffect());
+  }, 2600);
 }
 
 /**
@@ -589,11 +655,7 @@ function init() {
   // Os módulos abaixo dependem dos elementos data-driven já renderizados.
   initNav();
   scrollAnimations.init();
-  initCodeAnimation();
-  initContact();
-  initAiChat();
-  initIntroExperience();
-  initCursorEffect();
+  initDeferredModules();
 
   onLanguageChange(() => {
     renderDataSections();
