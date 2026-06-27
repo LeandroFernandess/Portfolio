@@ -5,7 +5,8 @@
 
 const RESEND_API_URL = "https://api.resend.com/emails";
 const RESEND_DEFAULT_FROM = "Portfólio <onboarding@resend.dev>";
-const EMAIL_RE = /^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+[A-Za-z]{2,63}$/;
+const EMAIL_RE =
+  /^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+[A-Za-z]{2,63}$/;
 const MAX_EMAIL_LENGTH = 254;
 const ALLOWED_EMAIL_DOMAINS = new Set([
   "gmail.com",
@@ -18,7 +19,8 @@ const ALLOWED_EMAIL_DOMAINS = new Set([
   "proton.me",
   "protonmail.com",
 ]);
-const ALLOWED_EMAIL_MESSAGE = "Use um e-mail pessoal de provedor aceito, como @gmail.com, @outlook.com ou @icloud.com.";
+const ALLOWED_EMAIL_MESSAGE =
+  "Use um e-mail pessoal de provedor aceito, como @gmail.com, @outlook.com ou @icloud.com.";
 
 /**
  * Envia uma resposta JSON padronizada para a Vercel Function.
@@ -39,13 +41,17 @@ const json = (res, statusCode, body) => {
  */
 const escapeHtml = (value) =>
   String(value ?? "")
-    .replace(/[<>&"']/g, (char) => ({
-      "<": "&lt;",
-      ">": "&gt;",
-      "&": "&amp;",
-      '"': "&quot;",
-      "'": "&#39;",
-    }[char]))
+    .replace(
+      /[<>&"']/g,
+      (char) =>
+        ({
+          "<": "&lt;",
+          ">": "&gt;",
+          "&": "&amp;",
+          '"': "&quot;",
+          "'": "&#39;",
+        })[char],
+    )
     .trim();
 
 /**
@@ -55,11 +61,16 @@ const escapeHtml = (value) =>
  */
 const parseEmail = (value) => {
   const email = String(value ?? "").trim();
-  if (!email || email.length > MAX_EMAIL_LENGTH || !EMAIL_RE.test(email)) return null;
+  if (!email || email.length > MAX_EMAIL_LENGTH || !EMAIL_RE.test(email))
+    return null;
 
   const [localPart, domain] = email.split("@");
-  if (!localPart || localPart.length > 64 || !domain || domain.length > 253) return null;
-  return { email: `${localPart}@${domain.toLowerCase()}`, domain: domain.toLowerCase() };
+  if (!localPart || localPart.length > 64 || !domain || domain.length > 253)
+    return null;
+  return {
+    email: `${localPart}@${domain.toLowerCase()}`,
+    domain: domain.toLowerCase(),
+  };
 };
 
 /**
@@ -87,10 +98,13 @@ const getEmailConfig = () => {
 
   const missing = Object.entries(config)
     .filter(([, value]) => !value)
-    .map(([key]) => ({
-      apiKey: "RESEND_API_KEY",
-      to: "CONTACT_EMAIL",
-    }[key]));
+    .map(
+      ([key]) =>
+        ({
+          apiKey: "RESEND_API_KEY",
+          to: "CONTACT_EMAIL",
+        })[key],
+    );
 
   if (missing.length) {
     return { missing };
@@ -109,9 +123,11 @@ const readBody = async (req) => {
 
   const chunks = [];
   for await (const chunk of req) chunks.push(chunk);
-  const raw = Buffer.concat(chunks.map((chunk) =>
-    Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk)
-  )).toString("utf8");
+  const raw = Buffer.concat(
+    chunks.map((chunk) =>
+      Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk),
+    ),
+  ).toString("utf8");
   return raw ? JSON.parse(raw) : {};
 };
 
@@ -142,17 +158,18 @@ const buildEmailHtml = ({ name, email, phone, message, sentAt }) => `
   </div>
 `;
 
-const buildEmailText = ({ name, email, phone, message, sentAt }) => [
-  "Novo contato pelo portfólio",
-  "",
-  `Nome: ${name}`,
-  `E-mail: ${email}`,
-  `Telefone: ${phone}`,
-  `Data/Hora: ${sentAt}`,
-  "",
-  "Mensagem:",
-  message,
-].join("\n");
+const buildEmailText = ({ name, email, phone, message, sentAt }) =>
+  [
+    "Novo contato pelo portfólio",
+    "",
+    `Nome: ${name}`,
+    `E-mail: ${email}`,
+    `Telefone: ${phone}`,
+    `Data/Hora: ${sentAt}`,
+    "",
+    "Mensagem:",
+    message,
+  ].join("\n");
 
 const mapResendError = (status) => {
   if (status === 401 || status === 403) {
@@ -232,8 +249,20 @@ module.exports = async function handler(req, res) {
         to: emailConfig.to,
         reply_to: parsedEmail.email,
         subject: `Novo contato - ${name}`,
-        text: buildEmailText({ name, email: parsedEmail.email, phone, message, sentAt }),
-        html: buildEmailHtml({ name, email: escapeHtml(parsedEmail.email), phone, message, sentAt }),
+        text: buildEmailText({
+          name,
+          email: parsedEmail.email,
+          phone,
+          message,
+          sentAt,
+        }),
+        html: buildEmailHtml({
+          name,
+          email: escapeHtml(parsedEmail.email),
+          phone,
+          message,
+          sentAt,
+        }),
       }),
     });
 

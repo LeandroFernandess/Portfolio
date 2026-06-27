@@ -16,18 +16,19 @@ import { t } from "./i18n.js";
  * @type {RegExp}
  *
  */
-const EMAIL_RE = /^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+[A-Za-z]{2,63}$/;
+const EMAIL_RE =
+  /^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+[A-Za-z]{2,63}$/;
 const MAX_EMAIL_LENGTH = 254;
 const ALLOWED_EMAIL_DOMAINS = new Set([
-    "gmail.com",
-    "hotmail.com",
-    "outlook.com",
-    "live.com",
-    "icloud.com",
-    "yahoo.com",
-    "yahoo.com.br",
-    "proton.me",
-    "protonmail.com",
+  "gmail.com",
+  "hotmail.com",
+  "outlook.com",
+  "live.com",
+  "icloud.com",
+  "yahoo.com",
+  "yahoo.com.br",
+  "proton.me",
+  "protonmail.com",
 ]);
 
 /**
@@ -36,17 +37,19 @@ const ALLOWED_EMAIL_DOMAINS = new Set([
  * @returns {string} - O telefone formatado.
  */
 const formatPhone = (value) => {
-    const digits = String(value ?? "").replace(/\D/g, "").slice(0, 11);
-    if (!digits) return "";
+  const digits = String(value ?? "")
+    .replace(/\D/g, "")
+    .slice(0, 11);
+  if (!digits) return "";
 
-    const area = digits.slice(0, 2);
-    const rest = digits.slice(2);
+  const area = digits.slice(0, 2);
+  const rest = digits.slice(2);
 
-    if (digits.length <= 10) {
-        return `(${area}) ${rest.slice(0, 4)}${rest.length > 4 ? `-${rest.slice(4, 8)}` : ""}`.trim();
-    }
+  if (digits.length <= 10) {
+    return `(${area}) ${rest.slice(0, 4)}${rest.length > 4 ? `-${rest.slice(4, 8)}` : ""}`.trim();
+  }
 
-    return `(${area}) ${rest.slice(0, 5)}-${rest.slice(5, 9)}`.trim();
+  return `(${area}) ${rest.slice(0, 5)}-${rest.slice(5, 9)}`.trim();
 };
 
 /**
@@ -54,136 +57,140 @@ const formatPhone = (value) => {
  * @returns {void}
  */
 export function initContact() {
-    const form = document.querySelector("#contactForm");
-    if (!form) return;
+  const form = document.querySelector("#contactForm");
+  if (!form) return;
 
-    const phoneInput = form.elements.phone;
-    const submitBtn = form.querySelector("#submitBtn");
-    const statusEl = form.querySelector("#formStatus");
-    const btnLabel = submitBtn?.querySelector(".btn-label");
-    const btnSpinner = submitBtn?.querySelector(".btn-spinner");
+  const phoneInput = form.elements.phone;
+  const submitBtn = form.querySelector("#submitBtn");
+  const statusEl = form.querySelector("#formStatus");
+  const btnLabel = submitBtn?.querySelector(".btn-label");
+  const btnSpinner = submitBtn?.querySelector(".btn-spinner");
 
-    const setError = (name, msg) => {
-        const input = form.elements[name];
-        const field = input?.closest(".field");
-        const errEl = form.querySelector(`[data-error-for="${name}"]`);
-        if (field) field.classList.toggle("has-error", !!msg);
-        if (errEl) errEl.textContent = msg || "";
+  const setError = (name, msg) => {
+    const input = form.elements[name];
+    const field = input?.closest(".field");
+    const errEl = form.querySelector(`[data-error-for="${name}"]`);
+    if (field) field.classList.toggle("has-error", !!msg);
+    if (errEl) errEl.textContent = msg || "";
+  };
+  const clearErrors = () =>
+    ["name", "email", "message"].forEach((n) => setError(n, ""));
+
+  const validate = (data) => {
+    let ok = true;
+    const emailParts = data.email.toLowerCase().split("@");
+    const [localPart, domain] = emailParts;
+
+    if (!data.name || data.name.length < 2) {
+      setError("name", t("contact.nameError"));
+      ok = false;
+    }
+    if (!data.email) {
+      setError("email", t("contact.emailRequired"));
+      ok = false;
+    } else if (
+      data.email.length > MAX_EMAIL_LENGTH ||
+      emailParts.length !== 2 ||
+      !localPart ||
+      localPart.length > 64 ||
+      !domain ||
+      domain.length > 253 ||
+      !EMAIL_RE.test(data.email)
+    ) {
+      setError("email", t("contact.emailInvalid"));
+      ok = false;
+    } else if (!ALLOWED_EMAIL_DOMAINS.has(domain)) {
+      setError("email", t("contact.emailDomainNotAllowed"));
+      ok = false;
+    }
+    if (!data.message || data.message.length < 10) {
+      setError("message", t("contact.messageError"));
+      ok = false;
+    }
+    return ok;
+  };
+
+  const setLoading = (loading) => {
+    if (submitBtn) submitBtn.disabled = loading;
+    btnLabel?.classList.toggle("is-hidden", loading);
+    btnSpinner?.classList.toggle("is-hidden", !loading);
+  };
+  const setStatus = (msg, kind = "info") => {
+    if (!statusEl) return;
+    statusEl.textContent = msg;
+    statusEl.classList.remove("is-success", "is-error");
+    if (kind === "success") statusEl.classList.add("is-success");
+    if (kind === "error") statusEl.classList.add("is-error");
+  };
+
+  ["name", "email", "message"].forEach((n) => {
+    form.elements[n]?.addEventListener("input", () => setError(n, ""));
+  });
+
+  phoneInput?.addEventListener("input", () => {
+    const formatted = formatPhone(phoneInput.value);
+    if (phoneInput.value !== formatted) {
+      phoneInput.value = formatted;
+    }
+  });
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    clearErrors();
+
+    if (form.elements.website?.value) {
+      setStatus(t("contact.botSuccess"), "success");
+      form.reset();
+      return;
+    }
+
+    const data = {
+      name: form.elements.name.value.trim(),
+      email: form.elements.email.value.trim(),
+      phone: formatPhone(form.elements.phone.value),
+      message: form.elements.message.value.trim(),
     };
-    const clearErrors = () => ["name", "email", "message"].forEach((n) => setError(n, ""));
 
-    const validate = (data) => {
-        let ok = true;
-        const emailParts = data.email.toLowerCase().split("@");
-        const [localPart, domain] = emailParts;
+    if (!validate(data)) {
+      setStatus(t("contact.review"), "error");
+      return;
+    }
 
-        if (!data.name || data.name.length < 2) {
-            setError("name", t("contact.nameError"));
-            ok = false;
-        }
-        if (!data.email) {
-            setError("email", t("contact.emailRequired"));
-            ok = false;
-        } else if (
-            data.email.length > MAX_EMAIL_LENGTH ||
-            emailParts.length !== 2 ||
-            !localPart ||
-            localPart.length > 64 ||
-            !domain ||
-            domain.length > 253 ||
-            !EMAIL_RE.test(data.email)
-        ) {
-            setError("email", t("contact.emailInvalid"));
-            ok = false;
-        } else if (!ALLOWED_EMAIL_DOMAINS.has(domain)) {
-            setError("email", t("contact.emailDomainNotAllowed"));
-            ok = false;
-        }
-        if (!data.message || data.message.length < 10) {
-            setError("message", t("contact.messageError"));
-            ok = false;
-        }
-        return ok;
+    setLoading(true);
+    setStatus(t("contact.sending"));
+
+    const payload = {
+      ...data,
+      website: form.elements.website?.value || "",
     };
 
-    const setLoading = (loading) => {
-        if (submitBtn) submitBtn.disabled = loading;
-        btnLabel?.classList.toggle("is-hidden", loading);
-        btnSpinner?.classList.toggle("is-hidden", !loading);
-    };
-    const setStatus = (msg, kind = "info") => {
-        if (!statusEl) return;
-        statusEl.textContent = msg;
-        statusEl.classList.remove("is-success", "is-error");
-        if (kind === "success") statusEl.classList.add("is-success");
-        if (kind === "error") statusEl.classList.add("is-error");
-    };
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const result = await response.json().catch(() => ({}));
 
-    ["name", "email", "message"].forEach((n) => {
-        form.elements[n]?.addEventListener("input", () => setError(n, ""));
-    });
+      if (!response.ok) {
+        const error = new Error(result.error || t("contact.sendError"));
+        error.status = response.status;
+        throw error;
+      }
 
-    phoneInput?.addEventListener("input", () => {
-        const formatted = formatPhone(phoneInput.value);
-        if (phoneInput.value !== formatted) {
-            phoneInput.value = formatted;
-        }
-    });
-
-    form.addEventListener("submit", async (event) => {
-        event.preventDefault();
-        clearErrors();
-
-        if (form.elements.website?.value) {
-            setStatus(t("contact.botSuccess"), "success");
-            form.reset();
-            return;
-        }
-
-        const data = {
-            name: form.elements.name.value.trim(),
-            email: form.elements.email.value.trim(),
-            phone: formatPhone(form.elements.phone.value),
-            message: form.elements.message.value.trim(),
-        };
-
-        if (!validate(data)) {
-            setStatus(t("contact.review"), "error");
-            return;
-        }
-
-        setLoading(true);
-        setStatus(t("contact.sending"));
-
-        const payload = {
-            ...data,
-            website: form.elements.website?.value || "",
-        };
-
-        try {
-            const response = await fetch("/api/contact", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload),
-            });
-            const result = await response.json().catch(() => ({}));
-
-            if (!response.ok) {
-                const error = new Error(result.error || t("contact.sendError"));
-                error.status = response.status;
-                throw error;
-            }
-
-            setStatus(t("contact.success"), "success");
-            form.reset();
-        } catch (err) {
-            const message = err instanceof Error && err.message ? err.message : t("contact.unavailable");
-            if (message.toLowerCase().includes("e-mail")) {
-                setError("email", message);
-            }
-            setStatus(message, "error");
-        } finally {
-            setLoading(false);
-        }
-    });
+      setStatus(t("contact.success"), "success");
+      form.reset();
+    } catch (err) {
+      const message =
+        err instanceof Error && err.message
+          ? err.message
+          : t("contact.unavailable");
+      if (message.toLowerCase().includes("e-mail")) {
+        setError("email", message);
+      }
+      setStatus(message, "error");
+    } finally {
+      setLoading(false);
+    }
+  });
 }

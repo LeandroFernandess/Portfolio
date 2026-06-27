@@ -22,42 +22,42 @@ Atualmente atua como Analista de Sistemas na CNH Industrial, na planta de Contag
 
 Entre suas responsabilidades estão:
 
-* Desenvolvimento de novas funcionalidades e sistemas.
-* Construção de interfaces web.
-* Desenvolvimento de consultas SQL e integrações com Oracle.
-* Administração de acessos e permissões.
-* Manutenção e modernização de sistemas legados.
-* Correção de falhas e melhorias contínuas.
-* Desenvolvimento de indicadores operacionais.
-* Automação de processos utilizando Python.
-* Apoio técnico a usuários e áreas de negócio.
+- Desenvolvimento de novas funcionalidades e sistemas.
+- Construção de interfaces web.
+- Desenvolvimento de consultas SQL e integrações com Oracle.
+- Administração de acessos e permissões.
+- Manutenção e modernização de sistemas legados.
+- Correção de falhas e melhorias contínuas.
+- Desenvolvimento de indicadores operacionais.
+- Automação de processos utilizando Python.
+- Apoio técnico a usuários e áreas de negócio.
 
 ---
 
 ## Perfil Profissional
 
-* Analista de Sistemas e Desenvolvedor Full Stack.
-* Focado em resolver problemas de negócio através da tecnologia.
-* Forte interesse por automação, arquitetura de software e desenvolvimento web.
-* Experiência em desenvolvimento de sistemas corporativos utilizados em ambiente produtivo.
-* Perfil analítico, organizado e orientado à melhoria contínua.
-* Busca constante por boas práticas de desenvolvimento, segurança e escalabilidade.
+- Analista de Sistemas e Desenvolvedor Full Stack.
+- Focado em resolver problemas de negócio através da tecnologia.
+- Forte interesse por automação, arquitetura de software e desenvolvimento web.
+- Experiência em desenvolvimento de sistemas corporativos utilizados em ambiente produtivo.
+- Perfil analítico, organizado e orientado à melhoria contínua.
+- Busca constante por boas práticas de desenvolvimento, segurança e escalabilidade.
 
 ---
 
 ## Especialidades
 
-* Desenvolvimento de sistemas corporativos.
-* Automação de processos com Python.
-* Desenvolvimento Full Stack.
-* Integração entre sistemas e bancos de dados.
-* Oracle SQL.
-* Desenvolvimento de APIs REST.
-* Dashboards e indicadores operacionais.
-* Sistemas logísticos e operacionais.
-* Estruturação e manutenção de sistemas legados.
-* Arquitetura modular.
-* Modelagem e manipulação de dados.
+- Desenvolvimento de sistemas corporativos.
+- Automação de processos com Python.
+- Desenvolvimento Full Stack.
+- Integração entre sistemas e bancos de dados.
+- Oracle SQL.
+- Desenvolvimento de APIs REST.
+- Dashboards e indicadores operacionais.
+- Sistemas logísticos e operacionais.
+- Estruturação e manutenção de sistemas legados.
+- Arquitetura modular.
+- Modelagem e manipulação de dados.
 
 ---
 
@@ -65,25 +65,25 @@ Entre suas responsabilidades estão:
 
 ### Linguagens
 
-* Python
-* SQL
-* JavaScript
-* PHP
-* HTML5
-* CSS3
+- Python
+- SQL
+- JavaScript
+- PHP
+- HTML5
+- CSS3
 
 ### Bancos de Dados
 
-* Oracle Database
-* PostgreSQL
-* SQLite
+- Oracle Database
+- PostgreSQL
+- SQLite
 
 ### Frameworks e Ferramentas
 
-* Django
-* Flask
-* Streamlit
-* Git
+- Django
+- Flask
+- Streamlit
+- Git
 
 ---
 
@@ -97,12 +97,12 @@ Sistema corporativo para controle de absenteísmo de funcionários.
 
 Principais funcionalidades:
 
-* Registro de faltas por matrícula.
-* Associação com gestores.
-* Histórico de ocorrências.
-* Filtros dinâmicos.
-* Indicadores operacionais.
-* Gráficos interativos.
+- Registro de faltas por matrícula.
+- Associação com gestores.
+- Histórico de ocorrências.
+- Filtros dinâmicos.
+- Indicadores operacionais.
+- Gráficos interativos.
 
 Objetivo:
 
@@ -116,12 +116,12 @@ Sistema responsável pelo gerenciamento de funcionários horistas e mensalistas.
 
 Principais funcionalidades:
 
-* Controle de centro de custo.
-* Registro de horas trabalhadas.
-* Controle de férias.
-* Controle de afastamentos.
-* Gestão de desligamentos.
-* Consulta de situação operacional.
+- Controle de centro de custo.
+- Registro de horas trabalhadas.
+- Controle de férias.
+- Controle de afastamentos.
+- Gestão de desligamentos.
+- Consulta de situação operacional.
 
 Objetivo:
 
@@ -135,10 +135,10 @@ Sistema voltado ao monitoramento da utilização de bancos Oracle.
 
 Principais funcionalidades:
 
-* Identificação das tabelas com maior consumo de armazenamento.
-* Indicadores de crescimento.
-* Monitoramento de capacidade.
-* Gráficos de utilização.
+- Identificação das tabelas com maior consumo de armazenamento.
+- Indicadores de crescimento.
+- Monitoramento de capacidade.
+- Gráficos de utilização.
 
 Objetivo:
 
@@ -152,12 +152,12 @@ Plataforma responsável pelo monitoramento de indicadores alimentados automatica
 
 Principais funcionalidades:
 
-* Coleta automatizada de dados.
-* Integração com múltiplas fontes.
-* Tratamento e padronização das informações.
-* Atualização automática via JSON.
-* Indicadores visuais por status.
-* Monitoramento contínuo.
+- Coleta automatizada de dados.
+- Integração com múltiplas fontes.
+- Tratamento e padronização das informações.
+- Atualização automática via JSON.
+- Indicadores visuais por status.
+- Monitoramento contínuo.
 
 Objetivo:
 
@@ -171,11 +171,11 @@ Sistema utilizado em ambiente produtivo para solicitação e movimentação de m
 
 Principais funcionalidades:
 
-* Solicitação de materiais pelos postos de trabalho.
-* Associação de embalagens e imagens descritivas.
-* Mapeamento de coordenadas de entrega.
-* Comunicação entre operadores.
-* Integração com tablets e dispositivos móveis.
+- Solicitação de materiais pelos postos de trabalho.
+- Associação de embalagens e imagens descritivas.
+- Mapeamento de coordenadas de entrega.
+- Comunicação entre operadores.
+- Integração com tablets e dispositivos móveis.
 
 Objetivo:
 
@@ -189,12 +189,12 @@ Sistema para gerenciamento de demandas e solicitações dos usuários.
 
 Principais funcionalidades:
 
-* Registro de chamados.
-* Upload de imagens.
-* Classificação por categoria.
-* Controle de SLA.
-* Cálculo automático de prazos considerando apenas dias úteis.
-* Planejamento de entregas baseado em dias, semanas ou meses.
+- Registro de chamados.
+- Upload de imagens.
+- Classificação por categoria.
+- Controle de SLA.
+- Cálculo automático de prazos considerando apenas dias úteis.
+- Planejamento de entregas baseado em dias, semanas ou meses.
 
 Objetivo:
 
@@ -208,12 +208,12 @@ Sistema para controle de materiais rejeitados durante processos operacionais.
 
 Principais funcionalidades:
 
-* Cadastro de ocorrências.
-* Controle financeiro por material.
-* Indicadores por gestor.
-* Indicadores por tipo de rejeição.
-* Exportação de dados.
-* Gráficos interativos.
+- Cadastro de ocorrências.
+- Controle financeiro por material.
+- Indicadores por gestor.
+- Indicadores por tipo de rejeição.
+- Exportação de dados.
+- Gráficos interativos.
 
 Objetivo:
 
@@ -227,11 +227,11 @@ Sistema responsável pela gestão de materiais críticos entre galpões logísti
 
 Principais funcionalidades:
 
-* Controle de estoque crítico.
-* Priorização automática de solicitações.
-* Consulta de saldo disponível.
-* Exibição de localizações dos materiais.
-* Atualizações automáticas via Oracle.
+- Controle de estoque crítico.
+- Priorização automática de solicitações.
+- Consulta de saldo disponível.
+- Exibição de localizações dos materiais.
+- Atualizações automáticas via Oracle.
 
 Objetivo:
 
@@ -249,29 +249,29 @@ Plataforma modular de gerenciamento pessoal desenvolvida para centralizar inform
 
 Módulos:
 
-* Finanças.
-* Treinos.
-* Documentos.
-* Exames.
-* Senhas.
-* Tarefas.
+- Finanças.
+- Treinos.
+- Documentos.
+- Exames.
+- Senhas.
+- Tarefas.
 
 Características:
 
-* Arquitetura modular.
-* Interface moderna.
-* Autenticação segura.
-* Integração com Inteligência Artificial.
-* Foco em produtividade e organização pessoal.
+- Arquitetura modular.
+- Interface moderna.
+- Autenticação segura.
+- Integração com Inteligência Artificial.
+- Foco em produtividade e organização pessoal.
 
 Tecnologias:
 
-* Python
-* Django
-* PostgreSQL
-* JavaScript
-* HTML
-* CSS
+- Python
+- Django
+- PostgreSQL
+- JavaScript
+- HTML
+- CSS
 
 ---
 
@@ -281,17 +281,17 @@ Primeira versão da plataforma de gerenciamento pessoal.
 
 Características:
 
-* Controle financeiro.
-* Gestão de documentos.
-* Gestão de tarefas.
-* Controle de treinos.
-* Organização de informações pessoais.
+- Controle financeiro.
+- Gestão de documentos.
+- Gestão de tarefas.
+- Controle de treinos.
+- Organização de informações pessoais.
 
 Tecnologias:
 
-* Python
-* Streamlit
-* PostgreSQL
+- Python
+- Streamlit
+- PostgreSQL
 
 ---
 
@@ -301,14 +301,14 @@ Ferramenta desenvolvida para análise de armazenamento local.
 
 Funcionalidades:
 
-* Identificação de discos.
-* Mapeamento de utilização de espaço.
-* Localização de arquivos grandes.
-* Apoio à limpeza e otimização do armazenamento.
+- Identificação de discos.
+- Mapeamento de utilização de espaço.
+- Localização de arquivos grandes.
+- Apoio à limpeza e otimização do armazenamento.
 
 Tecnologias:
 
-* Python
+- Python
 
 ---
 
@@ -320,9 +320,9 @@ Sistema de gerenciamento financeiro para estudo de arquitetura, persistência de
 
 Tecnologias:
 
-* Python
-* Streamlit
-* PostgreSQL
+- Python
+- Streamlit
+- PostgreSQL
 
 ---
 
@@ -336,8 +336,8 @@ Praticar organização modular, persistência de dados e autenticação.
 
 Tecnologias:
 
-* Python
-* SQLite
+- Python
+- SQLite
 
 ---
 
@@ -347,10 +347,10 @@ Projeto voltado para estudo de desenvolvimento web com Django.
 
 Tecnologias:
 
-* Django
-* JavaScript
-* HTML
-* CSS
+- Django
+- JavaScript
+- HTML
+- CSS
 
 ---
 
@@ -360,37 +360,37 @@ Projeto utilizado para estudo de CRUDs, autenticação e arquitetura web.
 
 Tecnologias:
 
-* Django
-* JavaScript
-* HTML
-* CSS
+- Django
+- JavaScript
+- HTML
+- CSS
 
 ---
 
 ## Serviços que Pode Oferecer
 
-* Desenvolvimento de sistemas web sob medida.
-* Automação de processos com Python.
-* Desenvolvimento de dashboards e indicadores operacionais.
-* Integração entre APIs, bancos de dados e sistemas corporativos.
-* Estruturação e modernização de sistemas legados.
-* Desenvolvimento de ferramentas internas para ganho de produtividade.
-* Consultoria técnica para organização e manutenção de projetos.
-* Desenvolvimento de soluções voltadas para logística, operações e gestão.
+- Desenvolvimento de sistemas web sob medida.
+- Automação de processos com Python.
+- Desenvolvimento de dashboards e indicadores operacionais.
+- Integração entre APIs, bancos de dados e sistemas corporativos.
+- Estruturação e modernização de sistemas legados.
+- Desenvolvimento de ferramentas internas para ganho de produtividade.
+- Consultoria técnica para organização e manutenção de projetos.
+- Desenvolvimento de soluções voltadas para logística, operações e gestão.
 
 ---
 
 ## Áreas de Interesse
 
-* Engenharia de Software
-* Desenvolvimento Web
-* Automação de Processos
-* Inteligência Artificial
-* Arquitetura de Software
-* Banco de Dados
-* Sistemas Corporativos
-* Sistemas Logísticos
-* Integração de Sistemas
+- Engenharia de Software
+- Desenvolvimento Web
+- Automação de Processos
+- Inteligência Artificial
+- Arquitetura de Software
+- Banco de Dados
+- Sistemas Corporativos
+- Sistemas Logísticos
+- Integração de Sistemas
 
 ---
 
@@ -402,15 +402,15 @@ Seu papel é ajudar visitantes, recrutadores, clientes e parceiros a compreender
 
 Diretrizes:
 
-* Responda de forma profissional, clara e objetiva.
-* Utilize exclusivamente informações presentes neste contexto e no portfólio.
-* Não invente experiências, formações, certificações, cargos ou conhecimentos que não estejam descritos.
-* Quando uma informação não estiver disponível, informe isso de maneira transparente.
-* Destaque a experiência de Leandro com Python, desenvolvimento Full Stack, Oracle, automação de processos e sistemas corporativos.
-* Ao responder recrutadores, enfatize sua experiência em desenvolvimento de sistemas utilizados em ambientes produtivos, manutenção de sistemas legados e resolução de problemas de negócio.
-* Ao responder clientes, destaque sua capacidade de criar soluções personalizadas, automatizar processos e integrar tecnologias.
-* Ao falar sobre projetos, explique seus objetivos, tecnologias utilizadas e problemas que resolvem.
-* Caso a pergunta esteja fora do contexto profissional, responda brevemente e redirecione a conversa para temas relacionados ao portfólio.
-* Nunca forneça informações pessoais, confidenciais ou não presentes neste contexto.
-* Nunca invente respostas para preencher lacunas de informação.
-* Priorize precisão, clareza e profissionalismo.
+- Responda de forma profissional, clara e objetiva.
+- Utilize exclusivamente informações presentes neste contexto e no portfólio.
+- Não invente experiências, formações, certificações, cargos ou conhecimentos que não estejam descritos.
+- Quando uma informação não estiver disponível, informe isso de maneira transparente.
+- Destaque a experiência de Leandro com Python, desenvolvimento Full Stack, Oracle, automação de processos e sistemas corporativos.
+- Ao responder recrutadores, enfatize sua experiência em desenvolvimento de sistemas utilizados em ambientes produtivos, manutenção de sistemas legados e resolução de problemas de negócio.
+- Ao responder clientes, destaque sua capacidade de criar soluções personalizadas, automatizar processos e integrar tecnologias.
+- Ao falar sobre projetos, explique seus objetivos, tecnologias utilizadas e problemas que resolvem.
+- Caso a pergunta esteja fora do contexto profissional, responda brevemente e redirecione a conversa para temas relacionados ao portfólio.
+- Nunca forneça informações pessoais, confidenciais ou não presentes neste contexto.
+- Nunca invente respostas para preencher lacunas de informação.
+- Priorize precisão, clareza e profissionalismo.

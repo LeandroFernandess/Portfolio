@@ -19,591 +19,1159 @@
   Projetos, arquitetura e segurança são renderizados via JS a partir de data.js.
 -->
 <html lang="pt-BR" class="no-js" data-theme="dark">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
     <meta name="theme-color" content="#08080a" />
-    <meta name="description" data-i18n-attr="content:meta.description"
-        content="Portfólio de Leandro — Desenvolvedor Full Stack. Projetos, arquitetura limpa e segurança em foco." />
+    <meta
+      name="description"
+      data-i18n-attr="content:meta.description"
+      content="Portfólio de Leandro — Desenvolvedor Full Stack. Projetos, arquitetura limpa e segurança em foco."
+    />
     <title data-i18n="meta.title">Leandro — Developer Portfolio</title>
     <!-- Bootstrap mínimo antes do CSS/JS principal para evitar flash de tema/idioma. -->
     <script>
-        document.documentElement.classList.remove("no-js");
-        try {
-            const storedTheme = localStorage.getItem("portfolioTheme");
-            document.documentElement.dataset.theme = storedTheme === "light" ? "light" : "dark";
-            const storedLanguage = localStorage.getItem("portfolioLanguage");
-            document.documentElement.lang = storedLanguage === "en-US" ? "en-US" : "pt-BR";
-        } catch {
-            document.documentElement.dataset.theme = "dark";
-            document.documentElement.lang = "pt-BR";
-        }
+      document.documentElement.classList.remove("no-js");
+      try {
+        const storedTheme = localStorage.getItem("portfolioTheme");
+        document.documentElement.dataset.theme =
+          storedTheme === "light" ? "light" : "dark";
+        const storedLanguage = localStorage.getItem("portfolioLanguage");
+        document.documentElement.lang =
+          storedLanguage === "en-US" ? "en-US" : "pt-BR";
+      } catch {
+        document.documentElement.dataset.theme = "dark";
+        document.documentElement.lang = "pt-BR";
+      }
     </script>
-    <style>
-        html {
-            background: #08080a;
-            color: #f5f7fb;
-        }
-
-        body {
-            margin: 0;
-            background: #08080a;
-            color: #f5f7fb;
-            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        }
-
-        .app-loader {
-            position: fixed;
-            inset: 0;
-            z-index: 1000;
-            display: grid;
-            place-items: center;
-            background: #08080a;
-        }
-    </style>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preload" as="style"
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+      onload="
+        this.onload = null;
+        this.rel = 'stylesheet';
+      "
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
-        onload="this.onload=null;this.rel='stylesheet'" />
-    <noscript>
-        <link rel="stylesheet"
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" />
+      />
     </noscript>
-    <link rel="icon"
-        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text x=%2250%%22 y=%2250%%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2250%22 font-family=%22Inter,%20sans-serif%22 fill=%22currentColor%22>L</text></svg>" />
-    <link rel="preload" as="style" href="assets/css/tokens.css" onload="this.onload=null;this.rel='stylesheet'" />
-    <link rel="preload" as="style" href="assets/css/base.css" onload="this.onload=null;this.rel='stylesheet'" />
-    <link rel="preload" as="style" href="assets/css/layout.css" onload="this.onload=null;this.rel='stylesheet'" />
-    <link rel="preload" as="style" href="assets/css/components.css" onload="this.onload=null;this.rel='stylesheet'" />
-    <link rel="preload" as="style" href="assets/css/animations.css" onload="this.onload=null;this.rel='stylesheet'" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text x=%2250%%22 y=%2250%%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2250%22 font-family=%22Inter,%20sans-serif%22 fill=%22currentColor%22>L</text></svg>"
+    />
+    <link
+      rel="preload"
+      as="style"
+      href="assets/css/tokens.css"
+      onload="
+        this.onload = null;
+        this.rel = 'stylesheet';
+      "
+    />
+    <link
+      rel="preload"
+      as="style"
+      href="assets/css/base.css"
+      onload="
+        this.onload = null;
+        this.rel = 'stylesheet';
+      "
+    />
+    <link
+      rel="preload"
+      as="style"
+      href="assets/css/layout.css"
+      onload="
+        this.onload = null;
+        this.rel = 'stylesheet';
+      "
+    />
+    <link
+      rel="preload"
+      as="style"
+      href="assets/css/components.css"
+      onload="
+        this.onload = null;
+        this.rel = 'stylesheet';
+      "
+    />
+    <link
+      rel="preload"
+      as="style"
+      href="assets/css/animations.css"
+      onload="
+        this.onload = null;
+        this.rel = 'stylesheet';
+      "
+    />
     <noscript>
-        <link rel="stylesheet" href="assets/css/tokens.css" />
-        <link rel="stylesheet" href="assets/css/base.css" />
-        <link rel="stylesheet" href="assets/css/layout.css" />
-        <link rel="stylesheet" href="assets/css/components.css" />
-        <link rel="stylesheet" href="assets/css/animations.css" />
+      <link rel="stylesheet" href="assets/css/tokens.css" />
+      <link rel="stylesheet" href="assets/css/base.css" />
+      <link rel="stylesheet" href="assets/css/layout.css" />
+      <link rel="stylesheet" href="assets/css/components.css" />
+      <link rel="stylesheet" href="assets/css/animations.css" />
     </noscript>
-</head>
+  </head>
 
-<body>
-    <div id="appLoader" class="app-loader is-active" role="status" aria-live="polite" data-app-loader>
-        <div class="app-loader__backdrop" aria-hidden="true"></div>
-        <div class="app-loader__core" aria-hidden="true">
-            <span class="app-loader__orbit"></span>
-            <span class="app-loader__orbit app-loader__orbit--2"></span>
-            <span class="app-loader__star"></span>
-        </div>
-        <p class="app-loader__label" data-app-loader-label data-i18n="loader.label">Preparando experiência…</p>
+  <body>
+    <div
+      id="appLoader"
+      class="app-loader is-active"
+      role="status"
+      aria-live="polite"
+      data-app-loader
+    >
+      <div class="app-loader__backdrop" aria-hidden="true"></div>
+      <div class="app-loader__core" aria-hidden="true">
+        <span class="app-loader__orbit"></span>
+        <span class="app-loader__orbit app-loader__orbit--2"></span>
+        <span class="app-loader__star"></span>
+      </div>
+      <p
+        class="app-loader__label"
+        data-app-loader-label
+        data-i18n="loader.label"
+      >
+        Preparando experiência…
+      </p>
     </div>
     <div class="ambient" aria-hidden="true">
-        <div class="ambient__blob ambient__blob--1"></div>
-        <div class="ambient__blob ambient__blob--2"></div>
-        <div class="ambient__blob ambient__blob--3"></div>
-        <div class="ambient__grain"></div>
+      <div class="ambient__blob ambient__blob--1"></div>
+      <div class="ambient__blob ambient__blob--2"></div>
+      <div class="ambient__blob ambient__blob--3"></div>
+      <div class="ambient__grain"></div>
     </div>
 
-    <section id="professionalSolarSystem" class="solar-intro" role="dialog" aria-modal="true"
-        aria-labelledby="solarTitle" aria-describedby="solarSummary" hidden>
-        <div class="solar-intro__backdrop" aria-hidden="true"></div>
-        <div class="solar-intro__shell">
-            <div class="solar-intro__header">
-                <span class="section-eyebrow" data-i18n="solar.title">Sistema Solar Profissional</span>
-            </div>
-
-            <div class="solar-intro__hero">
-                <p class="solar-intro__kicker" data-i18n="solar.kicker">Órbita profissional</p>
-                <h2 id="solarTitle">Leandro Fernandes</h2>
-                <p id="solarSummary" data-i18n="solar.summary">Domínios técnicos orbitando um centro de entrega,
-                    automação e operação.</p>
-            </div>
-
-            <div class="solar-intro__experience">
-                <div class="solar-intro__stage" data-solar-stage role="region" tabindex="0"
-                    aria-label="Cena 3D do Sistema Solar Profissional. Clique em um planeta ou use as setas para alternar domínios."
-                    data-i18n-attr="aria-label:solar.stageLabel"></div>
-
-                <div class="solar-intro__fallback" data-solar-fallback>
-                    <button type="button" class="solar-domain is-active" data-solar-domain data-domain-id="python">
-                        <span data-i18n="solar.python">Python</span>
-                    </button>
-                    <button type="button" class="solar-domain" data-solar-domain data-domain-id="sql">
-                        <span data-i18n="solar.sql">SQL</span>
-                    </button>
-                    <button type="button" class="solar-domain" data-solar-domain data-domain-id="django">
-                        <span data-i18n="solar.javascript">JavaScript</span>
-                    </button>
-                    <button type="button" class="solar-domain" data-solar-domain data-domain-id="automation">
-                        <span data-i18n="solar.automation">Automação</span>
-                    </button>
-                    <button type="button" class="solar-domain" data-solar-domain data-domain-id="web-scrapping">
-                        <span data-i18n="solar.webScrapping">Web Scrapping</span>
-                    </button>
-                    <button type="button" class="solar-domain" data-solar-domain data-domain-id="ai">
-                        <span data-i18n="solar.ai">IA</span>
-                    </button>
-                    <button type="button" class="solar-domain" data-solar-domain data-domain-id="web-systems">
-                        <span data-i18n="solar.webSystems">Sistemas Web</span>
-                    </button>
-                    <button type="button" class="solar-domain" data-solar-domain data-domain-id="streamlit">
-                        <span data-i18n="solar.streamlit">Streamlit</span>
-                    </button>
-                </div>
-
-                <div class="solar-intro__status" aria-live="polite">
-                    <span class="solar-intro__status-label" data-solar-active-label>Python</span>
-                    <strong data-solar-active-title data-i18n="solar.statusTitle">Automação e análise com código
-                        claro.</strong>
-                    <span data-solar-active-description data-i18n="solar.statusDescription">Scripts, integrações e
-                        rotinas confiáveis para operação
-                        real.</span>
-                    <span class="solar-intro__hint solar-intro__hint--desktop" data-i18n="solar.interactionHint">Clique
-                        em um planeta ou use as
-                        setas do teclado para navegar pela cena.</span>
-                    <span class="solar-intro__hint solar-intro__hint--touch" data-i18n="solar.interactionHintTouch">Use
-                        ‹ › para navegar ou deslize na cena.</span>
-
-                    <!-- Navegação touch entre planetas: visível apenas no mobile (CSS). -->
-                    <div class="solar-intro__nav" data-solar-nav role="group" aria-label="Navegação entre planetas"
-                        data-i18n-attr="aria-label:solar.navLabel">
-                        <button type="button" class="solar-intro__nav-btn" data-solar-prev aria-label="Planeta anterior"
-                            data-i18n-attr="aria-label:solar.prev">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 6l-6 6 6 6" />
-                            </svg>
-                        </button>
-                        <div class="solar-intro__dots" data-solar-dots></div>
-                        <button type="button" class="solar-intro__nav-btn" data-solar-next aria-label="Próximo planeta"
-                            data-i18n-attr="aria-label:solar.next">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="solar-intro__footer">
-                <p data-i18n="solar.ready">Pronto para abrir o portfólio.</p>
-                <div class="solar-intro__actions">
-                    <button type="button" class="btn btn--primary" data-solar-finish data-i18n="solar.enter">Entrar no
-                        portfólio</button>
-                </div>
-            </div>
+    <section
+      id="professionalSolarSystem"
+      class="solar-intro"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="solarTitle"
+      aria-describedby="solarSummary"
+      hidden
+    >
+      <div class="solar-intro__backdrop" aria-hidden="true"></div>
+      <div class="solar-intro__shell">
+        <div class="solar-intro__header">
+          <span class="section-eyebrow" data-i18n="solar.title"
+            >Sistema Solar Profissional</span
+          >
         </div>
+
+        <div class="solar-intro__hero">
+          <p class="solar-intro__kicker" data-i18n="solar.kicker">
+            Órbita profissional
+          </p>
+          <h2 id="solarTitle">Leandro Fernandes</h2>
+          <p id="solarSummary" data-i18n="solar.summary">
+            Domínios técnicos orbitando um centro de entrega, automação e
+            operação.
+          </p>
+        </div>
+
+        <div class="solar-intro__experience">
+          <div
+            class="solar-intro__stage"
+            data-solar-stage
+            role="region"
+            tabindex="0"
+            aria-label="Cena 3D do Sistema Solar Profissional. Clique em um planeta ou use as setas para alternar domínios."
+            data-i18n-attr="aria-label:solar.stageLabel"
+          ></div>
+
+          <div class="solar-intro__fallback" data-solar-fallback>
+            <button
+              type="button"
+              class="solar-domain is-active"
+              data-solar-domain
+              data-domain-id="python"
+            >
+              <span data-i18n="solar.python">Python</span>
+            </button>
+            <button
+              type="button"
+              class="solar-domain"
+              data-solar-domain
+              data-domain-id="sql"
+            >
+              <span data-i18n="solar.sql">SQL</span>
+            </button>
+            <button
+              type="button"
+              class="solar-domain"
+              data-solar-domain
+              data-domain-id="django"
+            >
+              <span data-i18n="solar.javascript">JavaScript</span>
+            </button>
+            <button
+              type="button"
+              class="solar-domain"
+              data-solar-domain
+              data-domain-id="automation"
+            >
+              <span data-i18n="solar.automation">Automação</span>
+            </button>
+            <button
+              type="button"
+              class="solar-domain"
+              data-solar-domain
+              data-domain-id="web-scrapping"
+            >
+              <span data-i18n="solar.webScrapping">Web Scrapping</span>
+            </button>
+            <button
+              type="button"
+              class="solar-domain"
+              data-solar-domain
+              data-domain-id="ai"
+            >
+              <span data-i18n="solar.ai">IA</span>
+            </button>
+            <button
+              type="button"
+              class="solar-domain"
+              data-solar-domain
+              data-domain-id="web-systems"
+            >
+              <span data-i18n="solar.webSystems">Sistemas Web</span>
+            </button>
+            <button
+              type="button"
+              class="solar-domain"
+              data-solar-domain
+              data-domain-id="streamlit"
+            >
+              <span data-i18n="solar.streamlit">Streamlit</span>
+            </button>
+          </div>
+
+          <div class="solar-intro__status" aria-live="polite">
+            <span class="solar-intro__status-label" data-solar-active-label
+              >Python</span
+            >
+            <strong data-solar-active-title data-i18n="solar.statusTitle"
+              >Automação e análise com código claro.</strong
+            >
+            <span
+              data-solar-active-description
+              data-i18n="solar.statusDescription"
+              >Scripts, integrações e rotinas confiáveis para operação
+              real.</span
+            >
+            <span
+              class="solar-intro__hint solar-intro__hint--desktop"
+              data-i18n="solar.interactionHint"
+              >Clique em um planeta ou use as setas do teclado para navegar pela
+              cena.</span
+            >
+            <span
+              class="solar-intro__hint solar-intro__hint--touch"
+              data-i18n="solar.interactionHintTouch"
+              >Use ‹ › para navegar ou deslize na cena.</span
+            >
+
+            <!-- Navegação touch entre planetas: visível apenas no mobile (CSS). -->
+            <div
+              class="solar-intro__nav"
+              data-solar-nav
+              role="group"
+              aria-label="Navegação entre planetas"
+              data-i18n-attr="aria-label:solar.navLabel"
+            >
+              <button
+                type="button"
+                class="solar-intro__nav-btn"
+                data-solar-prev
+                aria-label="Planeta anterior"
+                data-i18n-attr="aria-label:solar.prev"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  aria-hidden="true"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15 6l-6 6 6 6"
+                  />
+                </svg>
+              </button>
+              <div class="solar-intro__dots" data-solar-dots></div>
+              <button
+                type="button"
+                class="solar-intro__nav-btn"
+                data-solar-next
+                aria-label="Próximo planeta"
+                data-i18n-attr="aria-label:solar.next"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  aria-hidden="true"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M9 6l6 6-6 6"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="solar-intro__footer">
+          <p data-i18n="solar.ready">Pronto para abrir o portfólio.</p>
+          <div class="solar-intro__actions">
+            <button
+              type="button"
+              class="btn btn--primary"
+              data-solar-finish
+              data-i18n="solar.enter"
+            >
+              Entrar no portfólio
+            </button>
+          </div>
+        </div>
+      </div>
     </section>
 
     <header id="nav" class="nav">
-        <nav class="container nav__inner" aria-label="Principal" data-i18n-attr="aria-label:nav.aria">
-            <a href="#home" class="brand" aria-label="Voltar ao início" data-i18n-attr="aria-label:nav.home">
-                <span class="brand__mark" aria-hidden="true">
-                    <svg class="brand__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 9l-3 3 3 3" />
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M16 9l3 3-3 3" />
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 6l-2 12" />
-                    </svg>
-                </span>
-                <span class="brand__name">leandro.dev</span>
-            </a>
+      <nav
+        class="container nav__inner"
+        aria-label="Principal"
+        data-i18n-attr="aria-label:nav.aria"
+      >
+        <a
+          href="#home"
+          class="brand"
+          aria-label="Voltar ao início"
+          data-i18n-attr="aria-label:nav.home"
+        >
+          <span class="brand__mark" aria-hidden="true">
+            <svg
+              class="brand__icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M8 9l-3 3 3 3"
+              />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M16 9l3 3-3 3"
+              />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M13 6l-2 12"
+              />
+            </svg>
+          </span>
+          <span class="brand__name">leandro.dev</span>
+        </a>
 
-            <ul class="nav__links">
-                <li><a class="nav-link" href="#about" data-i18n="nav.about">Sobre</a></li>
-                <li><a class="nav-link" href="#projects" data-i18n="nav.projects">Projetos</a></li>
-                <li>
-                    <a class="nav-link" href="#architecture" data-i18n="nav.architecture">Arquitetura</a>
-                </li>
-                <li><a class="nav-link" href="#security" data-i18n="nav.security">Segurança</a></li>
-                <li><a class="nav-link" href="#ai" data-i18n="nav.ai">IA</a></li>
-                <li><a class="nav-link" href="#contact" data-i18n="nav.contact">Contato</a></li>
-            </ul>
+        <ul class="nav__links">
+          <li>
+            <a class="nav-link" href="#about" data-i18n="nav.about">Sobre</a>
+          </li>
+          <li>
+            <a class="nav-link" href="#projects" data-i18n="nav.projects"
+              >Projetos</a
+            >
+          </li>
+          <li>
+            <a
+              class="nav-link"
+              href="#architecture"
+              data-i18n="nav.architecture"
+              >Arquitetura</a
+            >
+          </li>
+          <li>
+            <a class="nav-link" href="#security" data-i18n="nav.security"
+              >Segurança</a
+            >
+          </li>
+          <li><a class="nav-link" href="#ai" data-i18n="nav.ai">IA</a></li>
+          <li>
+            <a class="nav-link" href="#contact" data-i18n="nav.contact"
+              >Contato</a
+            >
+          </li>
+        </ul>
 
-            <div class="nav__tools">
-                <button type="button" id="replayIntroBtn" class="nav-tool" data-i18n="nav.solar">Sistema Solar</button>
-                <div class="language-switch" role="group" aria-label="Selecionar idioma"
-                    data-i18n-attr="aria-label:language.group">
-                    <button type="button" class="language-option" data-language-option="pt-BR"
-                        aria-label="Português brasileiro" data-i18n-attr="aria-label:language.pt">🇧🇷</button>
-                    <button type="button" class="language-option" data-language-option="en-US"
-                        aria-label="Inglês americano" data-i18n-attr="aria-label:language.en">🇺🇸</button>
-                </div>
-                <button type="button" class="theme-toggle" data-theme-toggle aria-label="Ativar tema claro"
-                    aria-pressed="false">
-                    <span data-theme-icon aria-hidden="true">☼</span>
-                    <span data-theme-label>Light</span>
-                </button>
-            </div>
-
-            <button id="menuBtn" class="nav__toggle" aria-label="Abrir menu" aria-expanded="false"
-                data-i18n-attr="aria-label:nav.openMenu" aria-controls="mobileMenu">
-                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"
-                    aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16" />
-                </svg>
+        <div class="nav__tools">
+          <button
+            type="button"
+            id="replayIntroBtn"
+            class="nav-tool"
+            data-i18n="nav.solar"
+          >
+            Sistema Solar
+          </button>
+          <div
+            class="language-switch"
+            role="group"
+            aria-label="Selecionar idioma"
+            data-i18n-attr="aria-label:language.group"
+          >
+            <button
+              type="button"
+              class="language-option"
+              data-language-option="pt-BR"
+              aria-label="Português brasileiro"
+              data-i18n-attr="aria-label:language.pt"
+            >
+              🇧🇷
             </button>
-        </nav>
-
-        <div id="mobileMenu" class="mobile-menu">
-            <ul class="mobile-menu__list">
-                <li><a class="mobile-link" href="#about" data-i18n="nav.about">Sobre</a></li>
-                <li>
-                    <a class="mobile-link" href="#projects" data-i18n="nav.projects">Projetos</a>
-                </li>
-                <li>
-                    <a class="mobile-link" href="#architecture" data-i18n="nav.architecture">Arquitetura</a>
-                </li>
-                <li>
-                    <a class="mobile-link" href="#security" data-i18n="nav.security">Segurança</a>
-                </li>
-                <li><a class="mobile-link" href="#ai" data-i18n="nav.ai">IA</a></li>
-                <li><a class="mobile-link" href="#contact" data-i18n="nav.contact">Contato</a></li>
-                <li><button type="button" class="mobile-link mobile-link--button" data-solar-open
-                        data-i18n="nav.solar">Sistema Solar</button>
-                </li>
-                <li>
-                    <div class="language-switch language-switch--mobile" role="group" aria-label="Selecionar idioma"
-                        data-i18n-attr="aria-label:language.group">
-                        <button type="button" class="language-option" data-language-option="pt-BR"
-                            aria-label="Português brasileiro" data-i18n-attr="aria-label:language.pt">🇧🇷</button>
-                        <button type="button" class="language-option" data-language-option="en-US"
-                            aria-label="Inglês americano" data-i18n-attr="aria-label:language.en">🇺🇸</button>
-                    </div>
-                </li>
-                <li><button type="button" class="mobile-link mobile-link--button" data-theme-toggle
-                        aria-label="Ativar tema claro" aria-pressed="false">
-                        <span data-theme-icon aria-hidden="true">☼</span>
-                        <span data-theme-label>Light</span>
-                    </button></li>
-            </ul>
+            <button
+              type="button"
+              class="language-option"
+              data-language-option="en-US"
+              aria-label="Inglês americano"
+              data-i18n-attr="aria-label:language.en"
+            >
+              🇺🇸
+            </button>
+          </div>
+          <button
+            type="button"
+            class="theme-toggle"
+            data-theme-toggle
+            aria-label="Ativar tema claro"
+            aria-pressed="false"
+          >
+            <span data-theme-icon aria-hidden="true">☼</span>
+            <span data-theme-label>Light</span>
+          </button>
         </div>
+
+        <button
+          id="menuBtn"
+          class="nav__toggle"
+          aria-label="Abrir menu"
+          aria-expanded="false"
+          data-i18n-attr="aria-label:nav.openMenu"
+          aria-controls="mobileMenu"
+        >
+          <svg
+            width="24"
+            height="24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M4 7h16M4 12h16M4 17h16"
+            />
+          </svg>
+        </button>
+      </nav>
+
+      <div id="mobileMenu" class="mobile-menu">
+        <ul class="mobile-menu__list">
+          <li>
+            <a class="mobile-link" href="#about" data-i18n="nav.about">Sobre</a>
+          </li>
+          <li>
+            <a class="mobile-link" href="#projects" data-i18n="nav.projects"
+              >Projetos</a
+            >
+          </li>
+          <li>
+            <a
+              class="mobile-link"
+              href="#architecture"
+              data-i18n="nav.architecture"
+              >Arquitetura</a
+            >
+          </li>
+          <li>
+            <a class="mobile-link" href="#security" data-i18n="nav.security"
+              >Segurança</a
+            >
+          </li>
+          <li><a class="mobile-link" href="#ai" data-i18n="nav.ai">IA</a></li>
+          <li>
+            <a class="mobile-link" href="#contact" data-i18n="nav.contact"
+              >Contato</a
+            >
+          </li>
+          <li>
+            <button
+              type="button"
+              class="mobile-link mobile-link--button"
+              data-solar-open
+              data-i18n="nav.solar"
+            >
+              Sistema Solar
+            </button>
+          </li>
+          <li>
+            <div
+              class="language-switch language-switch--mobile"
+              role="group"
+              aria-label="Selecionar idioma"
+              data-i18n-attr="aria-label:language.group"
+            >
+              <button
+                type="button"
+                class="language-option"
+                data-language-option="pt-BR"
+                aria-label="Português brasileiro"
+                data-i18n-attr="aria-label:language.pt"
+              >
+                🇧🇷
+              </button>
+              <button
+                type="button"
+                class="language-option"
+                data-language-option="en-US"
+                aria-label="Inglês americano"
+                data-i18n-attr="aria-label:language.en"
+              >
+                🇺🇸
+              </button>
+            </div>
+          </li>
+          <li>
+            <button
+              type="button"
+              class="mobile-link mobile-link--button"
+              data-theme-toggle
+              aria-label="Ativar tema claro"
+              aria-pressed="false"
+            >
+              <span data-theme-icon aria-hidden="true">☼</span>
+              <span data-theme-label>Light</span>
+            </button>
+          </li>
+        </ul>
+      </div>
     </header>
 
     <main>
-        <section id="home" class="hero" data-metaphor="terminal">
-            <div class="container hero__grid">
-                <div class="hero__content">
-                    <h1 class="hero__title" data-animate="text" data-animate-delay="1" data-i18n-html="hero.title">
-                        Olá, eu sou <br />
-                        <span class="text-gradient">Leandro.</span>
-                    </h1>
+      <section id="home" class="hero" data-metaphor="terminal">
+        <div class="container hero__grid">
+          <div class="hero__content">
+            <h1
+              class="hero__title"
+              data-animate="text"
+              data-animate-delay="1"
+              data-i18n-html="hero.title"
+            >
+              Olá, eu sou <br />
+              <span class="text-gradient">Leandro.</span>
+            </h1>
 
-                    <p class="hero__subtitle" data-animate="text" data-animate-delay="2" data-i18n="hero.subtitle">
-                        Desenvolvedor Full Stack focado em construir
-                        interfaces fluidas, arquiteturas limpas e
-                        experiências digitais com a sutileza de um produto
-                        premium.
-                    </p>
+            <p
+              class="hero__subtitle"
+              data-animate="text"
+              data-animate-delay="2"
+              data-i18n="hero.subtitle"
+            >
+              Desenvolvedor Full Stack focado em construir interfaces fluidas,
+              arquiteturas limpas e experiências digitais com a sutileza de um
+              produto premium.
+            </p>
 
-                    <div class="hero__actions" data-animate="text" data-animate-delay="3">
-                        <a href="#projects" class="btn btn--primary">
-                            <span data-i18n="hero.projects">Ver projetos</span>
-                            <svg class="btn__icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                <path
-                                    d="M5 10a1 1 0 011-1h6.586L9.293 5.707a1 1 0 011.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414-1.414L12.586 11H6a1 1 0 01-1-1z" />
-                            </svg>
-                        </a>
-                        <a href="#contact" class="btn btn--ghost" data-i18n="hero.contact">Entrar em contato</a>
-                    </div>
-
-                    <dl class="hero__stats" data-animate="text" data-animate-delay="4">
-                        <div>
-                            <dt class="stat__value">2</dt>
-                            <dd class="stat__label" data-i18n="hero.years">Anos de código</dd>
-                        </div>
-                        <div>
-                            <dt class="stat__value">20+</dt>
-                            <dd class="stat__label" data-i18n="hero.delivered">Projetos entregues</dd>
-                        </div>
-                        <div>
-                            <dt class="stat__value">∞</dt>
-                            <dd class="stat__label" data-i18n="hero.learning">
-                                Aprendizado contínuo
-                            </dd>
-                        </div>
-                    </dl>
-                </div>
-
-                <div class="hero__visual" data-animate="image">
-                    <div class="code-window" role="img"
-                        aria-label="Editor de código digitando um snippet que descreve o desenvolvedor."
-                        data-i18n-attr="aria-label:hero.codeLabel">
-                        <div class="code-window__bar">
-                            <div class="code-window__lights">
-                                <span class="code-window__light code-window__light--red"></span>
-                                <span class="code-window__light code-window__light--yellow"></span>
-                                <span class="code-window__light code-window__light--green"></span>
-                            </div>
-                            <span class="code-window__file">portfolio.py</span>
-                        </div>
-                        <div class="code-window__body">
-                            <div class="code-window__gutter" aria-hidden="true">
-                                <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
-                                <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span>
-                            </div>
-                            <!-- Conteúdo preenchido por code-animation.js. -->
-                            <pre
-                                class="code-window__code"><code id="heroCode"></code><span id="heroCaret" class="code-caret"></span></pre>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <a href="#about" class="scroll-hint" aria-label="Rolar para baixo" data-i18n-attr="aria-label:hero.scroll">
-                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"
-                    aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+            <div
+              class="hero__actions"
+              data-animate="text"
+              data-animate-delay="3"
+            >
+              <a href="#projects" class="btn btn--primary">
+                <span data-i18n="hero.projects">Ver projetos</span>
+                <svg
+                  class="btn__icon"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M5 10a1 1 0 011-1h6.586L9.293 5.707a1 1 0 011.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414-1.414L12.586 11H6a1 1 0 01-1-1z"
+                  />
                 </svg>
-            </a>
-        </section>
-
-        <section id="about" class="section" data-metaphor="config">
-            <div class="container about__grid">
-                <div>
-                    <span class="section-eyebrow" data-animate="text" data-i18n="about.eyebrow">Sobre mim</span>
-                    <h2 class="section-title" data-animate="text" data-animate-delay="1" data-i18n-html="about.title">
-                        Construindo software com
-                        <span class="text-accent">propósito</span>.
-                    </h2>
-                </div>
-                <div class="prose">
-                    <p data-animate="text" data-animate-delay="0" data-i18n="about.p1">
-                        Sou desenvolvedor full stack com paixão por criar
-                        produtos digitais elegantes, performáticos e fáceis
-                        de manter. Acredito que o melhor código é aquele que
-                        desaparece — entregando uma experiência tão natural
-                        que o usuário sequer percebe a complexidade por
-                        trás.
-                    </p>
-                    <p data-animate="text" data-animate-delay="1" data-i18n-html="about.p2">
-                        Tenho conhecimento em
-                        <strong>Python, Oracle, SQL, JavaScript, PHP, HTML e
-                            CSS</strong>, além de frameworks como
-                        <strong>Django, Flask e Streamlit</strong>. Minha
-                        atuação é mais voltada para aplicações em Python,
-                        automações, dashboards e soluções web com foco em
-                        clareza, evolução contínua e manutenção simples.
-                    </p>
-                    <p data-animate="text" data-animate-delay="2" data-i18n="about.p3">
-                        Meu objetivo é continuar construindo produtos com
-                        impacto real — combinando o rigor técnico de um
-                        engenheiro com a sensibilidade estética de um
-                        designer.
-                    </p>
-
-                    <!-- Renderizado via data.js/main.js. -->
-                    <ul class="chips" id="skillsList" data-animate="text" data-animate-delay="3"></ul>
-                </div>
+              </a>
+              <a href="#contact" class="btn btn--ghost" data-i18n="hero.contact"
+                >Entrar em contato</a
+              >
             </div>
-        </section>
 
-        <section id="projects" class="section" data-metaphor="ide">
-            <div class="container">
-                <div style="margin-bottom: var(--space-7)">
-                    <span class="section-eyebrow" data-animate="text" data-i18n="projects.eyebrow">Projetos</span>
-                    <h2 class="section-title" data-animate="text" data-animate-delay="1" data-i18n="projects.title">
-                        Trabalhos selecionados
-                    </h2>
-                    <p class="section-lead" data-animate="text" data-animate-delay="2" data-i18n="projects.lead">
-                        Uma amostra dos projetos que melhor representam
-                        minha forma de pensar e construir software.
-                    </p>
+            <dl class="hero__stats" data-animate="text" data-animate-delay="4">
+              <div>
+                <dt class="stat__value">2</dt>
+                <dd class="stat__label" data-i18n="hero.years">
+                  Anos de código
+                </dd>
+              </div>
+              <div>
+                <dt class="stat__value">20+</dt>
+                <dd class="stat__label" data-i18n="hero.delivered">
+                  Projetos entregues
+                </dd>
+              </div>
+              <div>
+                <dt class="stat__value">∞</dt>
+                <dd class="stat__label" data-i18n="hero.learning">
+                  Aprendizado contínuo
+                </dd>
+              </div>
+            </dl>
+          </div>
+
+          <div class="hero__visual" data-animate="image">
+            <div
+              class="code-window"
+              role="img"
+              aria-label="Editor de código digitando um snippet que descreve o desenvolvedor."
+              data-i18n-attr="aria-label:hero.codeLabel"
+            >
+              <div class="code-window__bar">
+                <div class="code-window__lights">
+                  <span
+                    class="code-window__light code-window__light--red"
+                  ></span>
+                  <span
+                    class="code-window__light code-window__light--yellow"
+                  ></span>
+                  <span
+                    class="code-window__light code-window__light--green"
+                  ></span>
                 </div>
-                <!-- Renderizado via data.js/main.js. -->
-                <div class="cards-grid cards-grid--2" id="projectsGrid"></div>
+                <span class="code-window__file">portfolio.py</span>
+              </div>
+              <div class="code-window__body">
+                <div class="code-window__gutter" aria-hidden="true">
+                  <span>1</span><span>2</span><span>3</span><span>4</span
+                  ><span>5</span> <span>6</span><span>7</span><span>8</span
+                  ><span>9</span><span>10</span><span>11</span>
+                </div>
+                <!-- Conteúdo preenchido por code-animation.js. -->
+                <pre
+                  class="code-window__code"
+                ><code id="heroCode"></code><span id="heroCaret" class="code-caret"></span></pre>
+              </div>
             </div>
-        </section>
+          </div>
+        </div>
 
-        <section id="architecture" class="section" data-metaphor="compile">
-            <div class="container">
-                <div style="max-width: 40rem; margin-bottom: var(--space-7)">
-                    <span class="section-eyebrow" data-animate="text"
-                        data-i18n="architecture.eyebrow">Arquitetura</span>
-                    <h2 class="section-title" data-animate="text" data-animate-delay="1"
-                        data-i18n-html="architecture.title">
-                        Sistemas pensados para
-                        <span class="text-accent">escalar</span> e durar.
-                    </h2>
-                    <p class="section-lead" data-animate="text" data-animate-delay="2" data-i18n="architecture.lead">
-                        Cada projeto é construído com camadas bem definidas,
-                        responsabilidades únicas e baixíssimo acoplamento.
-                        Código que cresce sem virar legado.
-                    </p>
-                </div>
-                <!-- Renderizado via data.js/main.js. -->
-                <div class="cards-grid cards-grid--3" id="architectureGrid"></div>
+        <a
+          href="#about"
+          class="scroll-hint"
+          aria-label="Rolar para baixo"
+          data-i18n-attr="aria-label:hero.scroll"
+        >
+          <svg
+            width="24"
+            height="24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+            />
+          </svg>
+        </a>
+      </section>
+
+      <section id="about" class="section" data-metaphor="config">
+        <div class="container about__grid">
+          <div>
+            <span
+              class="section-eyebrow"
+              data-animate="text"
+              data-i18n="about.eyebrow"
+              >Sobre mim</span
+            >
+            <h2
+              class="section-title"
+              data-animate="text"
+              data-animate-delay="1"
+              data-i18n-html="about.title"
+            >
+              Construindo software com
+              <span class="text-accent">propósito</span>.
+            </h2>
+          </div>
+          <div class="prose">
+            <p data-animate="text" data-animate-delay="0" data-i18n="about.p1">
+              Sou desenvolvedor full stack com paixão por criar produtos
+              digitais elegantes, performáticos e fáceis de manter. Acredito que
+              o melhor código é aquele que desaparece — entregando uma
+              experiência tão natural que o usuário sequer percebe a
+              complexidade por trás.
+            </p>
+            <p
+              data-animate="text"
+              data-animate-delay="1"
+              data-i18n-html="about.p2"
+            >
+              Tenho conhecimento em
+              <strong>Python, Oracle, SQL, JavaScript, PHP, HTML e CSS</strong>,
+              além de frameworks como
+              <strong>Django, Flask e Streamlit</strong>. Minha atuação é mais
+              voltada para aplicações em Python, automações, dashboards e
+              soluções web com foco em clareza, evolução contínua e manutenção
+              simples.
+            </p>
+            <p data-animate="text" data-animate-delay="2" data-i18n="about.p3">
+              Meu objetivo é continuar construindo produtos com impacto real —
+              combinando o rigor técnico de um engenheiro com a sensibilidade
+              estética de um designer.
+            </p>
+
+            <!-- Renderizado via data.js/main.js. -->
+            <ul
+              class="chips"
+              id="skillsList"
+              data-animate="text"
+              data-animate-delay="3"
+            ></ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="projects" class="section" data-metaphor="ide">
+        <div class="container">
+          <div class="section-head">
+            <span
+              class="section-eyebrow"
+              data-animate="text"
+              data-i18n="projects.eyebrow"
+              >Projetos</span
+            >
+            <h2
+              class="section-title"
+              data-animate="text"
+              data-animate-delay="1"
+              data-i18n="projects.title"
+            >
+              Trabalhos selecionados
+            </h2>
+            <p
+              class="section-lead"
+              data-animate="text"
+              data-animate-delay="2"
+              data-i18n="projects.lead"
+            >
+              Uma amostra dos projetos que melhor representam minha forma de
+              pensar e construir software.
+            </p>
+          </div>
+          <!-- Renderizado via data.js/main.js. -->
+          <div class="cards-grid cards-grid--2" id="projectsGrid"></div>
+        </div>
+      </section>
+
+      <section id="architecture" class="section" data-metaphor="compile">
+        <div class="container">
+          <div class="section-head section-head--narrow">
+            <span
+              class="section-eyebrow"
+              data-animate="text"
+              data-i18n="architecture.eyebrow"
+              >Arquitetura</span
+            >
+            <h2
+              class="section-title"
+              data-animate="text"
+              data-animate-delay="1"
+              data-i18n-html="architecture.title"
+            >
+              Sistemas pensados para
+              <span class="text-accent">escalar</span> e durar.
+            </h2>
+            <p
+              class="section-lead"
+              data-animate="text"
+              data-animate-delay="2"
+              data-i18n="architecture.lead"
+            >
+              Cada projeto é construído com camadas bem definidas,
+              responsabilidades únicas e baixíssimo acoplamento. Código que
+              cresce sem virar legado.
+            </p>
+          </div>
+          <!-- Renderizado via data.js/main.js. -->
+          <div class="cards-grid cards-grid--3" id="architectureGrid"></div>
+        </div>
+      </section>
+
+      <section id="security" class="section" data-metaphor="checklist">
+        <div class="container security__grid">
+          <div>
+            <span
+              class="section-eyebrow"
+              data-animate="text"
+              data-i18n="security.eyebrow"
+              >Segurança</span
+            >
+            <h2
+              class="section-title"
+              data-animate="text"
+              data-animate-delay="1"
+              data-i18n-html="security.title"
+            >
+              Segurança não é feature. <br />
+              É <span class="text-accent">fundação</span>.
+            </h2>
+            <p
+              class="section-lead"
+              data-animate="text"
+              data-animate-delay="2"
+              data-i18n="security.lead"
+            >
+              Adoto princípios de segurança baseados no OWASP Top 10, validação
+              de entradas, autenticação segura, criptografia em trânsito com
+              TLS, controle de acesso por menor privilégio e múltiplas camadas
+              de proteção para reduzir riscos em aplicações web.
+            </p>
+          </div>
+          <!-- Renderizado via data.js/main.js. -->
+          <div class="security__list" id="securityList"></div>
+        </div>
+      </section>
+
+      <section id="ai" class="section" data-metaphor="terminal">
+        <div class="container container--narrow">
+          <div class="section-copy section-copy--centered">
+            <span
+              class="section-eyebrow"
+              data-animate="text"
+              data-i18n="ai.eyebrow"
+              >IA</span
+            >
+            <h2
+              class="section-title"
+              data-animate="text"
+              data-animate-delay="1"
+              data-i18n="ai.title"
+            >
+              Pergunte sobre meu trabalho.
+            </h2>
+            <p
+              class="section-lead section-lead--centered"
+              data-animate="text"
+              data-animate-delay="2"
+              data-i18n="ai.lead"
+            >
+              Use o assistente para entender minha experiência, habilidades,
+              projetos e como posso ajudar em uma solução digital.
+            </p>
+          </div>
+
+          <div class="ai-card" data-animate="card">
+            <form id="aiChatForm" class="ai-chat" novalidate>
+              <label
+                for="aiQuestion"
+                class="field__label"
+                data-i18n="ai.question"
+                >Pergunta</label
+              >
+              <div class="ai-chat__row">
+                <input
+                  id="aiQuestion"
+                  name="question"
+                  type="text"
+                  maxlength="800"
+                  class="field__input"
+                  data-i18n-attr="placeholder:ai.placeholder"
+                />
+                <button
+                  type="submit"
+                  id="aiSubmitBtn"
+                  class="btn btn--primary"
+                  data-i18n="ai.submit"
+                >
+                  Perguntar
+                </button>
+                <button
+                  type="button"
+                  id="aiResetBtn"
+                  class="btn btn--ghost"
+                  data-i18n="ai.reset"
+                >
+                  Nova conversa
+                </button>
+              </div>
+              <p
+                id="aiChatStatus"
+                class="form__status"
+                role="status"
+                aria-live="polite"
+              ></p>
+            </form>
+            <div class="ai-answer" aria-live="polite">
+              <p id="aiAnswer">
+                Faça uma pergunta sobre experiência profissional, tecnologias,
+                projetos ou serviços.
+              </p>
             </div>
-        </section>
+          </div>
+        </div>
+      </section>
 
-        <section id="security" class="section" data-metaphor="checklist">
-            <div class="container security__grid">
-                <div>
-                    <span class="section-eyebrow" data-animate="text" data-i18n="security.eyebrow">Segurança</span>
-                    <h2 class="section-title" data-animate="text" data-animate-delay="1"
-                        data-i18n-html="security.title">
-                        Segurança não é feature. <br />
-                        É <span class="text-accent">fundação</span>.
-                    </h2>
-                    <p class="section-lead" data-animate="text" data-animate-delay="2" data-i18n="security.lead">
-                        Adoto princípios de segurança baseados no OWASP Top 10,
-                        validação de entradas, autenticação segura, criptografia em trânsito com TLS,
-                        controle de acesso por menor privilégio e múltiplas camadas de proteção
-                        para reduzir riscos em aplicações web.
-                    </p>
-                </div>
-                <!-- Renderizado via data.js/main.js. -->
-                <div class="security__list" id="securityList"></div>
+      <section id="contact" class="section" data-metaphor="save">
+        <div class="container container--narrow">
+          <div class="section-copy section-copy--centered">
+            <span
+              class="section-eyebrow"
+              data-animate="text"
+              data-i18n="contact.eyebrow"
+              >Contato</span
+            >
+            <h2
+              class="section-title"
+              data-animate="text"
+              data-animate-delay="1"
+              data-i18n="contact.title"
+            >
+              Vamos construir algo juntos.
+            </h2>
+            <p
+              class="section-lead section-lead--centered"
+              data-animate="text"
+              data-animate-delay="2"
+              data-i18n="contact.lead"
+            >
+              Tem uma ideia, projeto ou oportunidade? Envie uma mensagem e te
+              respondo em breve.
+            </p>
+          </div>
+
+          <form id="contactForm" class="form" data-animate="card" novalidate>
+            <div class="form__row">
+              <div class="field">
+                <label for="name" class="field__label" data-i18n="contact.name"
+                  >Nome</label
+                >
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  required
+                  minlength="2"
+                  maxlength="80"
+                  autocomplete="name"
+                  class="field__input"
+                  placeholder="Seu nome"
+                  data-i18n-attr="placeholder:contact.namePlaceholder"
+                />
+                <p class="field__error" data-error-for="name"></p>
+              </div>
+              <div class="field">
+                <label
+                  for="email"
+                  class="field__label"
+                  data-i18n="contact.email"
+                  >E-mail</label
+                >
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  maxlength="254"
+                  autocomplete="email"
+                  class="field__input"
+                  placeholder="Seu e-mail"
+                  data-i18n-attr="placeholder:contact.emailPlaceholder"
+                />
+                <p class="field__error" data-error-for="email"></p>
+              </div>
             </div>
-        </section>
 
-        <section id="ai" class="section" data-metaphor="terminal">
-            <div class="container" style="max-width: 48rem">
-                <div style="text-align: center">
-                    <span class="section-eyebrow" data-animate="text" data-i18n="ai.eyebrow">IA</span>
-                    <h2 class="section-title" data-animate="text" data-animate-delay="1" data-i18n="ai.title">
-                        Pergunte sobre meu trabalho.
-                    </h2>
-                    <p class="section-lead" data-animate="text" data-animate-delay="2" style="margin-inline: auto"
-                        data-i18n="ai.lead">
-                        Use o assistente para entender minha experiência,
-                        habilidades, projetos e como posso ajudar em uma
-                        solução digital.
-                    </p>
-                </div>
-
-                <div class="ai-card" data-animate="card">
-                    <form id="aiChatForm" class="ai-chat" novalidate>
-                        <label for="aiQuestion" class="field__label" data-i18n="ai.question">Pergunta</label>
-                        <div class="ai-chat__row">
-                            <input id="aiQuestion" name="question" type="text" maxlength="800" class="field__input"
-                                data-i18n-attr="placeholder:ai.placeholder" />
-                            <button type="submit" id="aiSubmitBtn" class="btn btn--primary"
-                                data-i18n="ai.submit">Perguntar</button>
-                            <button type="button" id="aiResetBtn" class="btn btn--ghost" data-i18n="ai.reset">Nova
-                                conversa</button>
-                        </div>
-                        <p id="aiChatStatus" class="form__status" role="status" aria-live="polite"></p>
-                    </form>
-                    <div class="ai-answer" aria-live="polite">
-                        <p id="aiAnswer">
-                            Faça uma pergunta sobre experiência profissional,
-                            tecnologias, projetos ou serviços.
-                        </p>
-                    </div>
-                </div>
+            <div class="field">
+              <label for="phone" class="field__label" data-i18n="contact.phone"
+                >Telefone</label
+              >
+              <input
+                id="phone"
+                name="phone"
+                type="tel"
+                autocomplete="tel-national"
+                inputmode="numeric"
+                maxlength="15"
+                class="field__input"
+                placeholder="(00) 00000-0000"
+                data-i18n-attr="placeholder:contact.phonePlaceholder"
+              />
             </div>
-        </section>
 
-        <section id="contact" class="section" data-metaphor="save">
-            <div class="container" style="max-width: 48rem">
-                <div style="text-align: center">
-                    <span class="section-eyebrow" data-animate="text" data-i18n="contact.eyebrow">Contato</span>
-                    <h2 class="section-title" data-animate="text" data-animate-delay="1" data-i18n="contact.title">
-                        Vamos construir algo juntos.
-                    </h2>
-                    <p class="section-lead" data-animate="text" data-animate-delay="2" style="margin-inline: auto"
-                        data-i18n="contact.lead">
-                        Tem uma ideia, projeto ou oportunidade? Envie uma
-                        mensagem e te respondo em breve.
-                    </p>
-                </div>
-
-                <form id="contactForm" class="form" data-animate="card" novalidate>
-                    <div class="form__row">
-                        <div class="field">
-                            <label for="name" class="field__label" data-i18n="contact.name">Nome</label>
-                            <input id="name" name="name" type="text" required minlength="2" maxlength="80"
-                                autocomplete="name" class="field__input" placeholder="Seu nome"
-                                data-i18n-attr="placeholder:contact.namePlaceholder" />
-                            <p class="field__error" data-error-for="name"></p>
-                        </div>
-                        <div class="field">
-                            <label for="email" class="field__label" data-i18n="contact.email">E-mail</label>
-                            <input id="email" name="email" type="email" required maxlength="254" autocomplete="email"
-                                class="field__input" placeholder="Seu e-mail"
-                                data-i18n-attr="placeholder:contact.emailPlaceholder" />
-                            <p class="field__error" data-error-for="email"></p>
-                        </div>
-                    </div>
-
-                    <div class="field">
-                        <label for="phone" class="field__label" data-i18n="contact.phone">Telefone</label>
-                        <input id="phone" name="phone" type="tel" autocomplete="tel-national" inputmode="numeric"
-                            maxlength="15" class="field__input" placeholder="(00) 00000-0000"
-                            data-i18n-attr="placeholder:contact.phonePlaceholder" />
-                    </div>
-
-                    <div class="field">
-                        <label for="message" class="field__label" data-i18n="contact.message">Mensagem</label>
-                        <textarea id="message" name="message" rows="5" required minlength="10" maxlength="2000"
-                            class="field__input field__input--textarea" placeholder="Conte um pouco sobre sua ideia..."
-                            data-i18n-attr="placeholder:contact.messagePlaceholder"></textarea>
-                        <p class="field__error" data-error-for="message"></p>
-                    </div>
-
-                    <!-- Honeypot anti-spam: validado também em api/contact.js. -->
-                    <div class="honeypot" aria-hidden="true">
-                        <label><span data-i18n="contact.honeypot">Não preencha</span><input type="text" name="website"
-                                tabindex="-1" autocomplete="off" /></label>
-                    </div>
-
-                    <div class="form__footer">
-                        <p id="formStatus" class="form__status" role="status" aria-live="polite"></p>
-                        <button type="submit" id="submitBtn" class="btn btn--primary">
-                            <span class="btn-label" data-i18n="contact.submit">Enviar mensagem</span>
-                            <svg class="btn-spinner spinner is-hidden" viewBox="0 0 24 24" fill="none"
-                                aria-hidden="true">
-                                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"
-                                    style="opacity: 0.25" />
-                                <path d="M4 12a8 8 0 018-8" stroke="currentColor" stroke-width="3"
-                                    stroke-linecap="round" />
-                            </svg>
-                        </button>
-                    </div>
-                </form>
+            <div class="field">
+              <label
+                for="message"
+                class="field__label"
+                data-i18n="contact.message"
+                >Mensagem</label
+              >
+              <textarea
+                id="message"
+                name="message"
+                rows="5"
+                required
+                minlength="10"
+                maxlength="2000"
+                class="field__input field__input--textarea"
+                placeholder="Conte um pouco sobre sua ideia..."
+                data-i18n-attr="placeholder:contact.messagePlaceholder"
+              ></textarea>
+              <p class="field__error" data-error-for="message"></p>
             </div>
-        </section>
+
+            <!-- Honeypot anti-spam: validado também em api/contact.js. -->
+            <div class="honeypot" aria-hidden="true">
+              <label
+                ><span data-i18n="contact.honeypot">Não preencha</span
+                ><input
+                  type="text"
+                  name="website"
+                  tabindex="-1"
+                  autocomplete="off"
+              /></label>
+            </div>
+
+            <div class="form__footer">
+              <p
+                id="formStatus"
+                class="form__status"
+                role="status"
+                aria-live="polite"
+              ></p>
+              <button type="submit" id="submitBtn" class="btn btn--primary">
+                <span class="btn-label" data-i18n="contact.submit"
+                  >Enviar mensagem</span
+                >
+                <svg
+                  class="btn-spinner spinner is-hidden"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="3"
+                    class="spinner__track"
+                  />
+                  <path
+                    d="M4 12a8 8 0 018-8"
+                    stroke="currentColor"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
     </main>
 
-    <section id="projectVideoModal" class="project-video-modal" role="dialog" aria-modal="true"
-        aria-labelledby="projectVideoTitle" hidden>
-        <div class="project-video-modal__backdrop" data-project-video-backdrop aria-hidden="true"></div>
-        <div class="project-video-modal__shell">
-            <div class="project-video-modal__header">
-                <h2 id="projectVideoTitle" class="project-video-modal__title" data-i18n="projectModal.title">Vídeo do
-                    projeto</h2>
-                <button type="button" class="project-video-modal__close" data-project-video-close
-                    aria-label="Fechar vídeo" data-i18n-attr="aria-label:projectModal.close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="project-video-modal__body">
-                <video id="projectVideoPlayer" class="project-video-modal__player" controls muted playsinline
-                    preload="none"></video>
-            </div>
+    <section
+      id="projectVideoModal"
+      class="project-video-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="projectVideoTitle"
+      hidden
+    >
+      <div
+        class="project-video-modal__backdrop"
+        data-project-video-backdrop
+        aria-hidden="true"
+      ></div>
+      <div class="project-video-modal__shell">
+        <div class="project-video-modal__header">
+          <h2
+            id="projectVideoTitle"
+            class="project-video-modal__title"
+            data-i18n="projectModal.title"
+          >
+            Vídeo do projeto
+          </h2>
+          <button
+            type="button"
+            class="project-video-modal__close"
+            data-project-video-close
+            aria-label="Fechar vídeo"
+            data-i18n-attr="aria-label:projectModal.close"
+          >
+            <span aria-hidden="true">×</span>
+          </button>
         </div>
+        <div class="project-video-modal__body">
+          <video
+            id="projectVideoPlayer"
+            class="project-video-modal__player"
+            controls
+            muted
+            playsinline
+            preload="none"
+          ></video>
+        </div>
+      </div>
     </section>
 
     <footer class="footer">
-        <div class="container footer__inner">
-            <p>
-                © <span id="year"></span> <span data-i18n="footer.text"></span>
-            </p>
-            <ul class="footer__social">
-                <li>
-                    <a href="https://github.com/LeandroFernandess" target="_blank" rel="noopener noreferrer">GitHub</a>
-                </li>
-                <li>
-                    <a href="https://www.linkedin.com/in/leandro-fernandes-951ab3189/" target="_blank"
-                        rel="noopener noreferrer">LinkedIn</a>
-                </li>
-            </ul>
-        </div>
+      <div class="container footer__inner">
+        <p>© <span id="year"></span> <span data-i18n="footer.text"></span></p>
+        <ul class="footer__social">
+          <li>
+            <a
+              href="https://github.com/LeandroFernandess"
+              target="_blank"
+              rel="noopener noreferrer"
+              >GitHub</a
+            >
+          </li>
+          <li>
+            <a
+              href="https://www.linkedin.com/in/leandro-fernandes-951ab3189/"
+              target="_blank"
+              rel="noopener noreferrer"
+              >LinkedIn</a
+            >
+          </li>
+        </ul>
+      </div>
     </footer>
 
     <!-- App como ES module: importa data.js e os módulos de comportamento -->
     <script type="module" src="assets/js/main.js"></script>
-</body>
-
+  </body>
 </html>

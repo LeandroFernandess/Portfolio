@@ -28,10 +28,10 @@ let removeTimer = 0;
 let stuckTimer = 0;
 
 function logLoader(event, details = {}) {
-    debugLog("loader", event, {
-        now: Math.round(performance.now()),
-        ...details,
-    });
+  debugLog("loader", event, {
+    now: Math.round(performance.now()),
+    ...details,
+  });
 }
 
 /**
@@ -39,11 +39,11 @@ function logLoader(event, details = {}) {
  * @returns {HTMLElement|null} Elemento do overlay ou null se não encontrado.
  */
 function getOverlay() {
-    if (!overlay) {
-        overlay = document.querySelector("[data-app-loader]");
-        labelEl = overlay?.querySelector("[data-app-loader-label]") ?? null;
-    }
-    return overlay;
+  if (!overlay) {
+    overlay = document.querySelector("[data-app-loader]");
+    labelEl = overlay?.querySelector("[data-app-loader-label]") ?? null;
+  }
+  return overlay;
 }
 
 /**
@@ -51,32 +51,32 @@ function getOverlay() {
  * @returns {void}
  */
 function clearTimers() {
-    if (hideTimer) {
-        window.clearTimeout(hideTimer);
-        hideTimer = 0;
-    }
-    if (removeTimer) {
-        window.clearTimeout(removeTimer);
-        removeTimer = 0;
-    }
-    if (stuckTimer) {
-        window.clearTimeout(stuckTimer);
-        stuckTimer = 0;
-    }
+  if (hideTimer) {
+    window.clearTimeout(hideTimer);
+    hideTimer = 0;
+  }
+  if (removeTimer) {
+    window.clearTimeout(removeTimer);
+    removeTimer = 0;
+  }
+  if (stuckTimer) {
+    window.clearTimeout(stuckTimer);
+    stuckTimer = 0;
+  }
 }
 
 function armStuckLoaderFailsafe() {
-    if (stuckTimer) return;
-    stuckTimer = window.setTimeout(() => {
-        stuckTimer = 0;
-        ensureLoaderHidden({ reason: "failsafe:stuck-loader" });
-    }, STUCK_LOADER_MS);
+  if (stuckTimer) return;
+  stuckTimer = window.setTimeout(() => {
+    stuckTimer = 0;
+    ensureLoaderHidden({ reason: "failsafe:stuck-loader" });
+  }, STUCK_LOADER_MS);
 }
 
 function ensureInitialLoaderFailsafe() {
-    const node = getOverlay();
-    if (!node?.classList.contains("is-active")) return;
-    armStuckLoaderFailsafe();
+  const node = getOverlay();
+  if (!node?.classList.contains("is-active")) return;
+  armStuckLoaderFailsafe();
 }
 
 /**
@@ -86,24 +86,27 @@ function ensureInitialLoaderFailsafe() {
  * @returns {void}
  */
 export function showLoader({ messageKey } = {}) {
-    const node = getOverlay();
-    if (!node) return;
+  const node = getOverlay();
+  if (!node) return;
 
-    clearTimers();
-    if (messageKey && labelEl) labelEl.textContent = t(messageKey);
+  clearTimers();
+  if (messageKey && labelEl) labelEl.textContent = t(messageKey);
 
-    if (!node.classList.contains("is-active")) {
-        node.hidden = false;
-        void node.offsetWidth;
-        node.classList.add("is-active");
-        shownAt = performance.now();
-        armStuckLoaderFailsafe();
-        logLoader("show", { messageKey: messageKey ?? null, hidden: node.hidden });
-        return;
-    }
-
+  if (!node.classList.contains("is-active")) {
+    node.hidden = false;
+    void node.offsetWidth;
+    node.classList.add("is-active");
+    shownAt = performance.now();
     armStuckLoaderFailsafe();
-    logLoader("show:noop", { messageKey: messageKey ?? null, hidden: node.hidden });
+    logLoader("show", { messageKey: messageKey ?? null, hidden: node.hidden });
+    return;
+  }
+
+  armStuckLoaderFailsafe();
+  logLoader("show:noop", {
+    messageKey: messageKey ?? null,
+    hidden: node.hidden,
+  });
 }
 
 /**
@@ -113,32 +116,36 @@ export function showLoader({ messageKey } = {}) {
  * @returns {void}
  */
 export function hideLoader({ immediate = false } = {}) {
-    const node = getOverlay();
-    if (!node || !node.classList.contains("is-active")) return;
+  const node = getOverlay();
+  if (!node || !node.classList.contains("is-active")) return;
 
-    const finish = () => {
-        const visibleFor = Math.round(performance.now() - shownAt);
-        node.classList.remove("is-active");
-        logLoader("hide:finish", { immediate, visibleFor });
-        removeTimer = window.setTimeout(() => {
-            if (!node.classList.contains("is-active")) {
-                node.hidden = true;
-                logLoader("hide:hidden", { immediate });
-            }
-        }, HIDE_FALLBACK_MS);
-    };
+  const finish = () => {
+    const visibleFor = Math.round(performance.now() - shownAt);
+    node.classList.remove("is-active");
+    logLoader("hide:finish", { immediate, visibleFor });
+    removeTimer = window.setTimeout(() => {
+      if (!node.classList.contains("is-active")) {
+        node.hidden = true;
+        logLoader("hide:hidden", { immediate });
+      }
+    }, HIDE_FALLBACK_MS);
+  };
 
-    clearTimers();
-    if (immediate) {
-        logLoader("hide:start", { immediate: true });
-        finish();
-        return;
-    }
+  clearTimers();
+  if (immediate) {
+    logLoader("hide:start", { immediate: true });
+    finish();
+    return;
+  }
 
-    const elapsed = performance.now() - shownAt;
-    const wait = Math.max(0, MIN_VISIBLE_MS - elapsed);
-    logLoader("hide:start", { immediate: false, elapsed: Math.round(elapsed), wait: Math.round(wait) });
-    hideTimer = window.setTimeout(finish, wait);
+  const elapsed = performance.now() - shownAt;
+  const wait = Math.max(0, MIN_VISIBLE_MS - elapsed);
+  logLoader("hide:start", {
+    immediate: false,
+    elapsed: Math.round(elapsed),
+    wait: Math.round(wait),
+  });
+  hideTimer = window.setTimeout(finish, wait);
 }
 
 /**
@@ -149,14 +156,14 @@ export function hideLoader({ immediate = false } = {}) {
  * @returns {void}
  */
 export function ensureLoaderHidden({ reason = null } = {}) {
-    const node = getOverlay();
-    if (!node) return;
+  const node = getOverlay();
+  if (!node) return;
 
-    clearTimers();
-    node.classList.remove("is-active");
-    node.hidden = true;
-    shownAt = 0;
-    logLoader("force-hide", { reason });
+  clearTimers();
+  node.classList.remove("is-active");
+  node.hidden = true;
+  shownAt = 0;
+  logLoader("force-hide", { reason });
 }
 
 /**
@@ -166,10 +173,13 @@ export function ensureLoaderHidden({ reason = null } = {}) {
  * @param {string} [options.messageKey] Chave i18n para o rótulo.
  * @returns {void}
  */
-export function flashLoader({ messageKey = "loader.resuming", immediate = false } = {}) {
-    logLoader("flash", { messageKey, immediate });
-    showLoader({ messageKey });
-    hideLoader({ immediate });
+export function flashLoader({
+  messageKey = "loader.resuming",
+  immediate = false,
+} = {}) {
+  logLoader("flash", { messageKey, immediate });
+  showLoader({ messageKey });
+  hideLoader({ immediate });
 }
 
 ensureInitialLoaderFailsafe();

@@ -9,6 +9,8 @@ const { join } = require("node:path");
 const OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
 const MAX_QUESTION_LENGTH = 800;
 const SUPPORTED_LANGUAGES = new Set(["pt-BR", "en-US"]);
+const MAX_COMPLETION_TOKENS = 700;
+const MAX_CONTINUATIONS = 3;
 
 /**
  * Envia uma resposta JSON padronizada para a Vercel Function.
@@ -32,15 +34,98 @@ const readBody = async (req) => {
 
   const chunks = [];
   for await (const chunk of req) chunks.push(chunk);
-  const raw = Buffer.concat(chunks.map((chunk) =>
-    Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk)
-  )).toString("utf8");
+  const raw = Buffer.concat(
+    chunks.map((chunk) =>
+      Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk),
+    ),
+  ).toString("utf8");
   return raw ? JSON.parse(raw) : {};
 };
 
 const loadContext = async () => {
   const contextPath = join(__dirname, "..", "data", "ai-context.md");
   return readFile(contextPath, "utf8");
+};
+
+const createMessages = (
+  question,
+  context,
+  answerLanguage,
+  partialAnswer = "",
+) => {
+  const messages = [
+    {
+      role: "system",
+      content: `Você é o assistente do portfólio profissional de Leandro Fernandes. Responda em ${answerLanguage}, de forma objetiva e cordial. Use apenas o contexto fornecido. Se faltar informação ou a pergunta fugir do escopo profissional do portfólio, diga isso brevemente e redirecione para experiência, habilidades, projetos, serviços ou contato.`,
+    },
+    {
+      role: "system",
+      content: `Contexto público do portfólio:\n\n${context}`,
+    },
+    {
+      role: "user",
+      content: question,
+    },
+  ];
+
+  if (partialAnswer) {
+    messages.push(
+      { role: "assistant", content: partialAnswer },
+      {
+        role: "user",
+        content:
+          "Continue exatamente de onde a resposta anterior parou, sem reiniciar, sem repetir trechos e sem adicionar introdução.",
+      },
+    );
+  }
+
+  return messages;
+};
+
+const requestAnswer = async ({
+  apiKey,
+  model,
+  question,
+  context,
+  answerLanguage,
+  partialAnswer = "",
+}) => {
+  const openAiResponse = await fetch(OPENAI_API_URL, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model,
+      temperature: 0.4,
+      max_tokens: MAX_COMPLETION_TOKENS,
+      messages: createMessages(
+        question,
+        context,
+        answerLanguage,
+        partialAnswer,
+      ),
+    }),
+  });
+
+  if (!openAiResponse.ok) {
+    await openAiResponse.text().catch(() => "");
+    throw new Error("OPENAI_UPSTREAM_ERROR");
+  }
+
+  const payload = await openAiResponse.json();
+  const choice = payload.choices?.[0];
+  const answer = choice?.message?.content?.trim();
+
+  if (!answer) {
+    throw new Error("OPENAI_EMPTY_RESPONSE");
+  }
+
+  return {
+    answer,
+    finishReason: choice?.finish_reason || "stop",
+  };
 };
 
 /**
@@ -58,8 +143,11 @@ module.exports = async function handler(req, res) {
   try {
     const body = await readBody(req);
     const question = String(body.message || body.question || "").trim();
-    const language = SUPPORTED_LANGUAGES.has(body.language) ? body.language : "pt-BR";
-    const answerLanguage = language === "en-US" ? "English (en-US)" : "português brasileiro (pt-BR)";
+    const language = SUPPORTED_LANGUAGES.has(body.language)
+      ? body.language
+      : "pt-BR";
+    const answerLanguage =
+      language === "en-US" ? "English (en-US)" : "português brasileiro (pt-BR)";
 
     if (question.length < 2) {
       return json(res, 400, { error: "Envie uma pergunta." });
@@ -77,48 +165,47 @@ module.exports = async function handler(req, res) {
     const context = await loadContext();
     const model = process.env.OPENAI_MODEL;
 
-    const openAiResponse = await fetch(OPENAI_API_URL, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model,
-        temperature: 0.4,
-        max_tokens: 450,
-        messages: [
-          {
-            role: "system",
-            content:
-              `Você é o assistente do portfólio profissional de Leandro Fernandes. Responda em ${answerLanguage}, de forma objetiva e cordial. Use apenas o contexto fornecido. Se faltar informação ou a pergunta fugir do escopo profissional do portfólio, diga isso brevemente e redirecione para experiência, habilidades, projetos, serviços ou contato.`,
-          },
-          {
-            role: "system",
-            content: `Contexto público do portfólio:\n\n${context}`,
-          },
-          {
-            role: "user",
-            content: question,
-          },
-        ],
-      }),
-    });
+    const parts = [];
+    let finishReason = "length";
 
-    if (!openAiResponse.ok) {
-      await openAiResponse.text().catch(() => "");
-      return json(res, 502, { error: "Nao foi possível responder agora." });
+    for (
+      let attempt = 0;
+      attempt < MAX_CONTINUATIONS && finishReason === "length";
+      attempt += 1
+    ) {
+      const partialAnswer = parts.join("\n\n");
+      const result = await requestAnswer({
+        apiKey,
+        model,
+        question,
+        context,
+        answerLanguage,
+        partialAnswer,
+      });
+
+      parts.push(result.answer);
+      finishReason = result.finishReason;
     }
 
-    const payload = await openAiResponse.json();
-    const answer = payload.choices?.[0]?.message?.content?.trim();
+    const answer = parts.join("\n\n").trim();
 
     if (!answer) {
       return json(res, 502, { error: "A IA nao retornou uma resposta." });
     }
 
+    if (finishReason === "length") {
+      return json(res, 200, {
+        answer,
+        hasMore: true,
+      });
+    }
+
     return json(res, 200, { answer });
   } catch (error) {
+    if (error?.message === "OPENAI_UPSTREAM_ERROR") {
+      return json(res, 502, { error: "Nao foi possível responder agora." });
+    }
+
     return json(res, 500, { error: "Erro interno ao consultar a IA." });
   }
 };

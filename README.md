@@ -36,16 +36,16 @@ Este portfólio foi criado para apresentar o trabalho de Leandro Fernandes para 
 
 ### Tecnologias usadas
 
-| Recurso | Uso |
-| --- | --- |
+| Recurso                | Uso                                                       |
+| ---------------------- | --------------------------------------------------------- |
 | HTML, CSS e JavaScript | Interface, renderização das seções e comportamento da SPA |
-| CSS custom properties | Tokens de cor, espaçamento, tipografia, sombras e temas |
-| Vercel Functions | Backend mínimo para contato e IA |
-| Resend API | Envio das mensagens do formulário de contato |
-| OpenAI API | Respostas do assistente com contexto profissional |
-| Three.js | Cena 3D da intro, carregada sob demanda via CDN |
-| Google Fonts | Tipografias Inter e JetBrains Mono |
-| LocalStorage | Preferências de idioma, tema e visualização da intro |
+| CSS custom properties  | Tokens de cor, espaçamento, tipografia, sombras e temas   |
+| Vercel Functions       | Backend mínimo para contato e IA                          |
+| Resend API             | Envio das mensagens do formulário de contato              |
+| OpenAI API             | Respostas do assistente com contexto profissional         |
+| Three.js               | Cena 3D da intro, carregada sob demanda via CDN           |
+| Google Fonts           | Tipografias Inter e JetBrains Mono                        |
+| LocalStorage           | Preferências de idioma, tema e visualização da intro      |
 
 ### Estrutura de pastas
 
@@ -118,13 +118,13 @@ Os campos opcionais `year` e `category` são renderizados como badges discretos 
 O tema é controlado por `assets/js/theme.js`, aplicado no elemento `<html>`:
 
 ```html
-<html data-theme="dark">
+<html data-theme="dark"></html>
 ```
 
 ou:
 
 ```html
-<html data-theme="light">
+<html data-theme="light"></html>
 ```
 
 A preferência é salva em:
@@ -274,16 +274,16 @@ This portfolio was created to present Leandro Fernandes' work to clients, recrui
 
 ### Technologies
 
-| Feature | Usage |
-| --- | --- |
-| HTML, CSS, and JavaScript | Interface, section rendering, and SPA behavior |
-| CSS custom properties | Color, spacing, typography, shadow, and theme tokens |
-| Vercel Functions | Minimal backend for contact and AI |
-| Resend API | Contact form email delivery |
-| OpenAI API | AI assistant responses with professional context |
-| Three.js | 3D intro scene, loaded on demand from CDN |
-| Google Fonts | Inter and JetBrains Mono typography |
-| LocalStorage | Language, theme, and intro state preferences |
+| Feature                   | Usage                                                |
+| ------------------------- | ---------------------------------------------------- |
+| HTML, CSS, and JavaScript | Interface, section rendering, and SPA behavior       |
+| CSS custom properties     | Color, spacing, typography, shadow, and theme tokens |
+| Vercel Functions          | Minimal backend for contact and AI                   |
+| Resend API                | Contact form email delivery                          |
+| OpenAI API                | AI assistant responses with professional context     |
+| Three.js                  | 3D intro scene, loaded on demand from CDN            |
+| Google Fonts              | Inter and JetBrains Mono typography                  |
+| LocalStorage              | Language, theme, and intro state preferences         |
 
 ### Folder structure
 
@@ -356,13 +356,13 @@ The optional `year` and `category` fields are rendered as subtle badges in proje
 The theme is controlled by `assets/js/theme.js` and applied to the `<html>` element:
 
 ```html
-<html data-theme="dark">
+<html data-theme="dark"></html>
 ```
 
 or:
 
 ```html
-<html data-theme="light">
+<html data-theme="light"></html>
 ```
 
 The preference is saved under:
