@@ -165,7 +165,6 @@ export function initAiChat() {
             setStatus(t("ai.success"), "success");
         } catch (error) {
             if (currentRequest !== requestId) return;
-            console.error("Erro no assistente de IA:", error);
             setAnswer(t("ai.answerError"), "error");
             setStatus(t("ai.statusError"), "error");
         } finally {

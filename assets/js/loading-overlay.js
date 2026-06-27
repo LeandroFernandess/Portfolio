@@ -14,29 +14,25 @@
  */
 
 import { t } from "./i18n.js";
+import { debugLog } from "./debug.js";
 
 const MIN_VISIBLE_MS = 420;
 const HIDE_FALLBACK_MS = 700;
-const DIAG_PREFIX = "[portfolio:diag][loader]";
+const STUCK_LOADER_MS = 5000;
 
 let overlay = null;
 let labelEl = null;
 let shownAt = 0;
 let hideTimer = 0;
 let removeTimer = 0;
+let stuckTimer = 0;
 
-/**
- * Registra eventos de diagnóstico do loader.
- * @param {string} event Nome do evento.
- * @param {Object} [details] Detalhes adicionais para diagnóstico.
- */
 function logLoader(event, details = {}) {
-    console.info(DIAG_PREFIX, event, {
+    debugLog("loader", event, {
         now: Math.round(performance.now()),
         ...details,
     });
 }
-
 
 /**
  * Resolve o elemento do overlay.
@@ -63,6 +59,24 @@ function clearTimers() {
         window.clearTimeout(removeTimer);
         removeTimer = 0;
     }
+    if (stuckTimer) {
+        window.clearTimeout(stuckTimer);
+        stuckTimer = 0;
+    }
+}
+
+function armStuckLoaderFailsafe() {
+    if (stuckTimer) return;
+    stuckTimer = window.setTimeout(() => {
+        stuckTimer = 0;
+        ensureLoaderHidden({ reason: "failsafe:stuck-loader" });
+    }, STUCK_LOADER_MS);
+}
+
+function ensureInitialLoaderFailsafe() {
+    const node = getOverlay();
+    if (!node?.classList.contains("is-active")) return;
+    armStuckLoaderFailsafe();
 }
 
 /**
@@ -83,10 +97,12 @@ export function showLoader({ messageKey } = {}) {
         void node.offsetWidth;
         node.classList.add("is-active");
         shownAt = performance.now();
+        armStuckLoaderFailsafe();
         logLoader("show", { messageKey: messageKey ?? null, hidden: node.hidden });
         return;
     }
 
+    armStuckLoaderFailsafe();
     logLoader("show:noop", { messageKey: messageKey ?? null, hidden: node.hidden });
 }
 
@@ -155,3 +171,5 @@ export function flashLoader({ messageKey = "loader.resuming", immediate = false 
     showLoader({ messageKey });
     hideLoader({ immediate });
 }
+
+ensureInitialLoaderFailsafe();

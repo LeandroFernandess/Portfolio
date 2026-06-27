@@ -85,7 +85,7 @@ Portfólio/
 └── README.md
 ```
 
-### Conteudo e internacionalizacao
+### Conteúdo e internacionalização
 
 O conteúdo principal dos projetos, skills, arquitetura, segurança e editor animado fica em `assets/js/data.js`. A camada de internacionalização fica em `assets/js/i18n.js` e suporta os idiomas:
 
@@ -138,10 +138,9 @@ portfolioTheme
 Crie um arquivo `.env` local para uso com `vercel dev` e configure as mesmas variáveis no painel da Vercel em produção. Não versionar arquivos `.env`.
 
 ```txt
-RESEND_API_KEY=your-resend-api-key
-CONTACT_EMAIL=destination@example.com
-CONTACT_FROM_EMAIL=Portfolio <noreply@example.com>
-OPEN_AI_API_KEY=your-openai-api-key
+RESEND_API_KEY=<your-resend-api-key>
+CONTACT_EMAIL=<destination-address>
+OPEN_AI_API_KEY=<your-openai-api-key>
 OPENAI_MODEL=gpt-4.1-mini
 ```
 
@@ -149,9 +148,16 @@ Observações:
 
 - `RESEND_API_KEY` é obrigatória para `/api/contact`.
 - `CONTACT_EMAIL` deve ser o e-mail que receberá as mensagens.
-- `CONTACT_FROM_EMAIL` deve usar um remetente validado no Resend em produção.
+- O remetente usado no Resend é fixo: `Portfólio <onboarding@resend.dev>`.
+- O e-mail digitado pelo visitante no formulário não preenche variáveis de ambiente e é usado apenas como `reply_to`.
 - `OPEN_AI_API_KEY` é obrigatória para `/api/chat`.
 - `OPENAI_MODEL` define o modelo usado pela função de IA.
+
+Exemplo de `.env.example`:
+
+```txt
+CONTACT_EMAIL=seu-email-de-destino@exemplo.com
+```
 
 ### Como executar localmente
 
@@ -186,11 +192,13 @@ A função `api/contact.js`:
 - aceita apenas `POST`;
 - ignora submissões que preenchem o honeypot;
 - valida nome, e-mail e mensagem;
+- aceita apenas domínios de e-mail presentes na allowlist (`gmail.com`, `hotmail.com`, `outlook.com`, `live.com`, `icloud.com`, `yahoo.com`, `yahoo.com.br`, `proton.me`, `protonmail.com`);
 - escapa HTML antes de montar o e-mail;
 - envia a mensagem via Resend usando `RESEND_API_KEY`;
 - usa `CONTACT_EMAIL` como destinatário;
-- usa `CONTACT_FROM_EMAIL` como remetente quando configurado;
-- define `reply_to` com o e-mail informado pelo visitante.
+- usa `Portfólio <onboarding@resend.dev>` como remetente fixo;
+- define `reply_to` com o e-mail informado pelo visitante;
+- nunca usa o e-mail do visitante como `from`.
 
 #### Assistente de IA com OpenAI
 
@@ -368,10 +376,9 @@ portfolioTheme
 Create a local `.env` file for `vercel dev` and configure the same variables in the Vercel dashboard for production. Do not commit `.env` files.
 
 ```txt
-RESEND_API_KEY=your-resend-api-key
-CONTACT_EMAIL=destination@example.com
-CONTACT_FROM_EMAIL=Portfolio <noreply@example.com>
-OPEN_AI_API_KEY=your-openai-api-key
+RESEND_API_KEY=<your-resend-api-key>
+CONTACT_EMAIL=<destination-address>
+OPEN_AI_API_KEY=<your-openai-api-key>
 OPENAI_MODEL=gpt-4.1-mini
 ```
 
@@ -379,9 +386,16 @@ Notes:
 
 - `RESEND_API_KEY` is required for `/api/contact`.
 - `CONTACT_EMAIL` should be the inbox that receives messages.
-- `CONTACT_FROM_EMAIL` should use a verified Resend sender in production.
+- The sender used in Resend is fixed: `Portfólio <onboarding@resend.dev>`.
+- The email typed by the visitor does not populate environment variables and is used only as `reply_to`.
 - `OPEN_AI_API_KEY` is required for `/api/chat`.
 - `OPENAI_MODEL` defines the model used by the AI function.
+
+Example `.env.example`:
+
+```txt
+CONTACT_EMAIL=seu-email-de-destino@exemplo.com
+```
 
 ### Running locally
 
@@ -416,11 +430,13 @@ The `api/contact.js` function:
 - accepts only `POST`;
 - ignores submissions that fill the honeypot;
 - validates name, email, and message;
+- accepts only email domains present in the allowlist (`gmail.com`, `hotmail.com`, `outlook.com`, `live.com`, `icloud.com`, `yahoo.com`, `yahoo.com.br`, `proton.me`, `protonmail.com`);
 - escapes HTML before building the email;
 - sends the message through Resend using `RESEND_API_KEY`;
 - uses `CONTACT_EMAIL` as the recipient;
-- uses `CONTACT_FROM_EMAIL` as the sender when configured;
-- sets `reply_to` with the email provided by the visitor.
+- uses `Portfólio <onboarding@resend.dev>` as the fixed sender;
+- sets `reply_to` with the email provided by the visitor;
+- never uses the visitor email as `from`.
 
 #### AI assistant with OpenAI
 

@@ -447,7 +447,12 @@ export function createScrollAnimations() {
   }
 
   /**
-   * Recalcula tudo (ex.: após conteúdo dinâmico ou troca de layout). Deve ser chamado sempre que o conteúdo ou layout mudar significativamente, para garantir que os cálculos de progresso e as animações continuem precisas. Ele reconecta o IntersectionObserver, recolleciona os elementos animados e as metáforas (atualizando seus textos conforme o idioma atual), e reinicia a animação. Se o usuário preferir reduzir movimento, ele simplesmente revela tudo de uma vez.
+   * Recalcula tudo (ex.: após conteúdo dinâmico ou troca de layout). 
+   * Deve ser chamado sempre que o conteúdo ou layout mudar significativamente, 
+   * para garantir que os cálculos de progresso e as animações continuem precisas. 
+   * Ele reconecta o IntersectionObserver, recolhe os elementos animados e 
+   * as metáforas (atualizando seus textos conforme o idioma atual), e reinicia a animação. 
+   * Se o usuário preferir reduzir movimento, ele simplesmente revela tudo de uma vez.
    * @returns {void}
    */
   function refresh() {

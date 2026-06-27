@@ -21,19 +21,13 @@ import { initTheme } from "./theme.js";
 import { initIntroExperience } from "./intro-experience.js";
 import { initCursorEffect } from "./cursor-effect.js";
 import { hideLoader, flashLoader, ensureLoaderHidden } from "./loading-overlay.js";
+import { debugLog } from "./debug.js";
 
 const scrollAnimations = createScrollAnimations();
 let openProjectVideoModal = () => { };
 let projectVideoModalInitialized = false;
-const DIAG_PREFIX = "[portfolio:diag][app]";
-
-/**
- * Registra eventos de diagnóstico da aplicação.
- * @param {string} event Nome do evento.
- * @param {Object} [details] Detalhes adicionais para diagnóstico.
- */
 function logApp(event, details = {}) {
-  console.info(DIAG_PREFIX, event, {
+  debugLog("app", event, {
     now: Math.round(performance.now()),
     visibilityState: document.visibilityState,
     readyState: document.readyState,
@@ -247,7 +241,6 @@ function initProjectVideoModal() {
   const resetVideo = () => {
     if (!videoEl) return;
     logApp("video:reset", {
-      currentSrc: videoEl.currentSrc || videoEl.getAttribute("src") || null,
       readyState: videoEl.readyState,
     });
     videoEl.pause();
@@ -269,7 +262,6 @@ function initProjectVideoModal() {
     previousFocus = document.activeElement;
     titleEl.textContent = projectTitle || t("projectModal.fallbackTitle");
     logApp("video:open", {
-      projectVideo,
       projectTitle: projectTitle || null,
     });
     videoEl.src = projectVideo;
@@ -285,7 +277,6 @@ function initProjectVideoModal() {
   ["loadstart", "loadedmetadata", "loadeddata", "canplay", "playing", "pause", "emptied", "suspend"].forEach((eventName) => {
     videoEl?.addEventListener(eventName, () => {
       logApp(`video:${eventName}`, {
-        currentSrc: videoEl.currentSrc || videoEl.getAttribute("src") || null,
         readyState: videoEl.readyState,
         networkState: videoEl.networkState,
         paused: videoEl.paused,

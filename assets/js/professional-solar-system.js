@@ -5,13 +5,13 @@
  */
 
 import { localize, onLanguageChange } from "./i18n.js";
+import { debugLog } from "./debug.js";
 
 const THREE_CDN_URL = "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
-const DIAG_PREFIX = "[portfolio:diag][solar]";
 
 function logSolar(event, details = {}) {
-    console.info(DIAG_PREFIX, event, {
+    debugLog("solar", event, {
         now: Math.round(performance.now()),
         ...details,
     });
@@ -466,7 +466,7 @@ export function createProfessionalSolarSystem(root) {
         renderer.render(scene, camera);
     };
 
-    const pickFromEvent = (event, { commit = false } = {}) => {
+    const pickFromEvent = (event) => {
         if (!stage || !raycaster || !camera || fallbackMode) return;
         const rect = stage.getBoundingClientRect();
         pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
@@ -476,11 +476,10 @@ export function createProfessionalSolarSystem(root) {
         const picked = intersections[0]?.object?.userData?.domainId;
         const domain = DOMAINS.find((item) => item.id === picked);
         if (domain) setActiveDomain(domain);
-        if (commit && domain) setActiveDomain(domain);
     };
 
     const handlePointerMove = (event) => pickFromEvent(event);
-    const handleClick = (event) => pickFromEvent(event, { commit: true });
+    const handleClick = (event) => pickFromEvent(event);
     const handlePointerLeave = () => {
         if (!fallbackMode) setActiveDomain(activeDomain);
     };

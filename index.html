@@ -53,18 +53,6 @@
         </div>
         <p class="app-loader__label" data-app-loader-label data-i18n="loader.label">Preparando experiência…</p>
     </div>
-    <script>
-        window.addEventListener("load", function () {
-            window.setTimeout(function () {
-                var loader = document.getElementById("appLoader");
-                if (loader && loader.classList.contains("is-active")) {
-                    loader.classList.remove("is-active");
-                    loader.hidden = true;
-                }
-            }, 5000);
-        });
-    </script>
-
     <div class="ambient" aria-hidden="true">
         <div class="ambient__blob ambient__blob--1"></div>
         <div class="ambient__blob ambient__blob--2"></div>
@@ -488,8 +476,8 @@
                         </div>
                         <div class="field">
                             <label for="email" class="field__label" data-i18n="contact.email">E-mail</label>
-                            <input id="email" name="email" type="email" required autocomplete="email"
-                                class="field__input" placeholder="voce@email.com"
+                            <input id="email" name="email" type="email" required maxlength="254" autocomplete="email"
+                                class="field__input" placeholder="Seu e-mail"
                                 data-i18n-attr="placeholder:contact.emailPlaceholder" />
                             <p class="field__error" data-error-for="email"></p>
                         </div>

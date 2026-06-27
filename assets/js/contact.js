@@ -11,7 +11,24 @@
 
 import { t } from "./i18n.js";
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+/**
+ * Expressão regular para validar e-mails.
+ * @type {RegExp}
+ *
+ */
+const EMAIL_RE = /^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+[A-Za-z]{2,63}$/;
+const MAX_EMAIL_LENGTH = 254;
+const ALLOWED_EMAIL_DOMAINS = new Set([
+    "gmail.com",
+    "hotmail.com",
+    "outlook.com",
+    "live.com",
+    "icloud.com",
+    "yahoo.com",
+    "yahoo.com.br",
+    "proton.me",
+    "protonmail.com",
+]);
 
 /**
  * Formata um número de telefone.
@@ -57,6 +74,9 @@ export function initContact() {
 
     const validate = (data) => {
         let ok = true;
+        const emailParts = data.email.toLowerCase().split("@");
+        const [localPart, domain] = emailParts;
+
         if (!data.name || data.name.length < 2) {
             setError("name", t("contact.nameError"));
             ok = false;
@@ -64,8 +84,19 @@ export function initContact() {
         if (!data.email) {
             setError("email", t("contact.emailRequired"));
             ok = false;
-        } else if (!EMAIL_RE.test(data.email)) {
+        } else if (
+            data.email.length > MAX_EMAIL_LENGTH ||
+            emailParts.length !== 2 ||
+            !localPart ||
+            localPart.length > 64 ||
+            !domain ||
+            domain.length > 253 ||
+            !EMAIL_RE.test(data.email)
+        ) {
             setError("email", t("contact.emailInvalid"));
+            ok = false;
+        } else if (!ALLOWED_EMAIL_DOMAINS.has(domain)) {
+            setError("email", t("contact.emailDomainNotAllowed"));
             ok = false;
         }
         if (!data.message || data.message.length < 10) {
@@ -138,14 +169,19 @@ export function initContact() {
             const result = await response.json().catch(() => ({}));
 
             if (!response.ok) {
-                throw new Error(result.error || t("contact.sendError"));
+                const error = new Error(result.error || t("contact.sendError"));
+                error.status = response.status;
+                throw error;
             }
 
             setStatus(t("contact.success"), "success");
             form.reset();
         } catch (err) {
-            console.error("Erro no formulário de contato:", err);
-            setStatus(t("contact.unavailable"), "error");
+            const message = err instanceof Error && err.message ? err.message : t("contact.unavailable");
+            if (message.toLowerCase().includes("e-mail")) {
+                setError("email", message);
+            }
+            setStatus(message, "error");
         } finally {
             setLoading(false);
         }
