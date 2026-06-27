@@ -24,7 +24,7 @@ export const projects = [
     emoji: "📊",
     image: "assets/media/projects/sigpv2/SIGPV2_PRINT@800.webp",
     imageSrcset:
-      "assets/media/projects/sigpv2/SIGPV2_PRINT@480.webp 480w, assets/media/projects/sigpv2/SIGPV2_PRINT@800.webp 800w, assets/media/projects/sigpv2/SIGPV2_PRINT@800.jpg 801w",
+      "assets/media/projects/sigpv2/SIGPV2_PRINT@480.webp 480w, assets/media/projects/sigpv2/SIGPV2_PRINT@800.webp 800w, assets/media/projects/sigpv2/SIGPV2_PRINT@800.webp 801w",
     imageSizes: "(min-width: 900px) 38vw, 100vw",
     video: "assets/media/projects/sigpv2/SIGPV2_VIDEO_480.mp4",
     year: "2026",
