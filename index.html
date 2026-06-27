@@ -27,23 +27,67 @@
     <meta name="description" data-i18n-attr="content:meta.description"
         content="Portfólio de Leandro — Desenvolvedor Full Stack. Projetos, arquitetura limpa e segurança em foco." />
     <title data-i18n="meta.title">Leandro — Developer Portfolio</title>
+    <!-- Bootstrap mínimo antes do CSS/JS principal para evitar flash de tema/idioma. -->
+    <script>
+        document.documentElement.classList.remove("no-js");
+        try {
+            const storedTheme = localStorage.getItem("portfolioTheme");
+            document.documentElement.dataset.theme = storedTheme === "light" ? "light" : "dark";
+            const storedLanguage = localStorage.getItem("portfolioLanguage");
+            document.documentElement.lang = storedLanguage === "en-US" ? "en-US" : "pt-BR";
+        } catch {
+            document.documentElement.dataset.theme = "dark";
+            document.documentElement.lang = "pt-BR";
+        }
+    </script>
+    <style>
+        html {
+            background: #08080a;
+            color: #f5f7fb;
+        }
+
+        body {
+            margin: 0;
+            background: #08080a;
+            color: #f5f7fb;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        .app-loader {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            display: grid;
+            place-items: center;
+            background: #08080a;
+        }
+    </style>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" />
+    <link rel="preload" as="style"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript>
+        <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" />
+    </noscript>
     <link rel="icon"
         href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text x=%2250%%22 y=%2250%%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2250%22 font-family=%22Inter,%20sans-serif%22 fill=%22currentColor%22>L</text></svg>" />
-    <!-- Design system (ordem importa: tokens → base → layout → componentes → animações) -->
-    <link rel="stylesheet" href="assets/css/tokens.css" />
-    <link rel="stylesheet" href="assets/css/base.css" />
-    <link rel="stylesheet" href="assets/css/layout.css" />
-    <link rel="stylesheet" href="assets/css/components.css" />
-    <link rel="stylesheet" href="assets/css/animations.css" />
+    <link rel="preload" as="style" href="assets/css/tokens.css" onload="this.onload=null;this.rel='stylesheet'" />
+    <link rel="preload" as="style" href="assets/css/base.css" onload="this.onload=null;this.rel='stylesheet'" />
+    <link rel="preload" as="style" href="assets/css/layout.css" onload="this.onload=null;this.rel='stylesheet'" />
+    <link rel="preload" as="style" href="assets/css/components.css" onload="this.onload=null;this.rel='stylesheet'" />
+    <link rel="preload" as="style" href="assets/css/animations.css" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript>
+        <link rel="stylesheet" href="assets/css/tokens.css" />
+        <link rel="stylesheet" href="assets/css/base.css" />
+        <link rel="stylesheet" href="assets/css/layout.css" />
+        <link rel="stylesheet" href="assets/css/components.css" />
+        <link rel="stylesheet" href="assets/css/animations.css" />
+    </noscript>
 </head>
 
 <body>
-    <!-- Overlay de carregamento global: cobre carga inicial, transição da
-         intro (Sistema Solar → portfólio) e retomada no mobile (bfcache). -->
     <div id="appLoader" class="app-loader is-active" role="status" aria-live="polite" data-app-loader>
         <div class="app-loader__backdrop" aria-hidden="true"></div>
         <div class="app-loader__core" aria-hidden="true">
@@ -76,7 +120,7 @@
             </div>
 
             <div class="solar-intro__experience">
-                <div class="solar-intro__stage" data-solar-stage tabindex="0"
+                <div class="solar-intro__stage" data-solar-stage role="region" tabindex="0"
                     aria-label="Cena 3D do Sistema Solar Profissional. Clique em um planeta ou use as setas para alternar domínios."
                     data-i18n-attr="aria-label:solar.stageLabel"></div>
 
@@ -560,19 +604,6 @@
 
     <!-- App como ES module: importa data.js e os módulos de comportamento -->
     <script type="module" src="assets/js/main.js"></script>
-    <!-- Bootstrap mínimo antes do CSS/JS principal para evitar flash de tema/idioma. -->
-    <script>
-        document.documentElement.classList.remove("no-js");
-        try {
-            const storedTheme = localStorage.getItem("portfolioTheme");
-            document.documentElement.dataset.theme = storedTheme === "light" ? "light" : "dark";
-            const storedLanguage = localStorage.getItem("portfolioLanguage");
-            document.documentElement.lang = storedLanguage === "en-US" ? "en-US" : "pt-BR";
-        } catch {
-            document.documentElement.dataset.theme = "dark";
-            document.documentElement.lang = "pt-BR";
-        }
-    </script>
 </body>
 
 </html>
