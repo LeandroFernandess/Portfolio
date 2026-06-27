@@ -1,8 +1,29 @@
+/**
+ * professional-solar-system.js
+ * ----------------------------------------------------------------
+ * Cria o sistema solar profissional, com planetas representando habilidades e 
+ * tecnologias. O sistema é interativo, responsivo e acessível, permitindo 
+ * navegação por teclado e leitores de tela.
+ */
+
 import { localize as e, onLanguageChange as t } from "./i18n.js";
 import { debugLog as a } from "./debug.js";
+
+/**
+ * Adiciona um evento de log para monitorar ações e eventos do sistema solar profissional.
+ * @param {*} e - Nome do evento a ser registrado.
+ * @param {*} t - Dados adicionais relacionados ao evento.
+ */
 function o(e, t = {}) {
   a("solar", e, { now: Math.round(performance.now()), ...t });
 }
+
+/**
+ * Obtém o valor de uma propriedade CSS personalizada.
+ * @param {string} e - Nome da propriedade CSS.
+ * @param {string} t - Valor padrão caso a propriedade não esteja definida.
+ * @returns {string} - Valor da propriedade CSS ou o valor padrão.
+ */
 const i = (e, t) =>
     getComputedStyle(document.documentElement).getPropertyValue(e).trim() || t,
   n = [
@@ -145,6 +166,12 @@ const i = (e, t) =>
       phase: 6,
     },
   ];
+
+/**
+ * Cria o sistema solar profissional, inicializando os elementos do DOM e configurando os eventos.
+ * @param {HTMLElement} a - Elemento raiz do sistema solar profissional.
+ * @returns {void}
+ */
 export function createProfessionalSolarSystem(a) {
   const r = a.querySelector("[data-solar-stage]"),
     s = a.querySelector("[data-solar-fallback]"),

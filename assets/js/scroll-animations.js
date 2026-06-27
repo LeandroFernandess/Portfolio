@@ -1,4 +1,26 @@
+/**
+ * scroll-animations.js
+ * ----------------------------------------------------------------
+ * Módulo responsável por gerenciar animações baseadas em rolagem.
+ *
+ * Este arquivo define a função createScrollAnimations, que cria e
+ * gerencia animações de elementos na página com base na posição de
+ * rolagem do usuário. Ele utiliza IntersectionObserver para detectar
+ * quando os elementos entram ou saem da viewport, e aplica efeitos
+ * visuais como opacidade, transformação e digitação simulada.
+ *
+ * O módulo também considera preferências de acessibilidade, como
+ * "prefers-reduced-motion", e ajusta o comportamento das animações
+ * de acordo com as capacidades do dispositivo do usuário.
+ */
+
 import { getCurrentLanguage as e, onLanguageChange as t } from "./i18n.js";
+
+/**
+ * Retorna o conteúdo de um "metaphor" baseado no idioma atual.
+ * @param {string} e - O identificador do "metaphor".
+ * @returns {string} - O conteúdo do "metaphor" no idioma atual.
+ */
 const n = {
   terminal: {
     "pt-BR": "$ python -m streamlit run portfolio.py",
@@ -49,17 +71,36 @@ const n = {
     "en-US": "> saving contact.json … done ✓",
   },
 };
+const r = (e, t = 0, n = 1) => (e < t ? t : e > n ? n : e);
+
+/**
+ * Retorna o conteúdo de um "metaphor" baseado no idioma atual.
+ * @param {string} t - O identificador do "metaphor".
+ * @returns {string} - O conteúdo do "metaphor" no idioma atual.
+ */
 function o(t) {
   const o = n[t];
   return o ? (o[e()] ?? o["pt-BR"] ?? Object.values(o)[0] ?? "") : "";
 }
-const r = (e, t = 0, n = 1) => (e < t ? t : e > n ? n : e);
+
+/**
+ * Calcula o progresso de uma animação com base na posição do elemento e no deslocamento.
+ * @param {*} e - O elemento alvo da animação.
+ * @param {*} t - A posição de referência para o cálculo do progresso.
+ * @param {*} n - Um fator de ajuste opcional.
+ * @returns {number} - O progresso da animação, limitado entre 0 e 1.
+ */
 function c(e, t, n = 0) {
   const o = e.height || 1,
     c = t - e.top,
     a = r(c / (t + o) - 0.05 * n);
   return a < 0.32 ? r(a / 0.32) : a <= 0.7 ? 1 : r(1 - (a - 0.7) / (1 - 0.7));
 }
+
+/**
+ * Cria e gerencia animações baseadas no scroll da página.
+ * @returns {Object} - Um objeto contendo métodos para controlar as animações.
+ */
 export function createScrollAnimations() {
   const e = window.matchMedia("(prefers-reduced-motion: reduce)").matches,
     n = window.matchMedia("(pointer: coarse)").matches,
@@ -84,6 +125,10 @@ export function createScrollAnimations() {
   function v() {
     ((y = window.innerHeight), (w = S?.getBoundingClientRect().height || y));
   }
+  /**
+   * Inicializa os elementos animados na página, configurando seus estados iniciais.
+   * @returns {void}
+   */
   function E() {
     ((i = Array.from(document.querySelectorAll("[data-animate]")).map((e) => ({
       el: e,
@@ -122,6 +167,11 @@ export function createScrollAnimations() {
         t && l.push(t);
       }));
   }
+  /**
+   * Atualiza o progresso da animação para um elemento específico.
+   * @param {*} e - O elemento da animação.
+   * @param {number} t - O progresso da animação, entre 0 e 1.
+   */
   function C(e, t) {
     s || e.el.style.setProperty("--progress", t.toFixed(4));
     const n = t > 0.001 && t < 0.999;
@@ -129,6 +179,11 @@ export function createScrollAnimations() {
       ? ((e.el.style.willChange = "transform, opacity"), (e.settled = !1))
       : n || e.settled || ((e.el.style.willChange = ""), (e.settled = !0));
   }
+  /**
+   * Atualiza o conteúdo do elemento "metaphor" com base no progresso da animação.
+   * @param {*} e - O elemento "metaphor".
+   * @param {number} t - O progresso da animação, entre 0 e 1.
+   */
   function _(e, t) {
     const n = e.full.length,
       o = Math.round(r(t) * n),
@@ -138,6 +193,15 @@ export function createScrollAnimations() {
     ((e.caret.style.opacity = 0 === o ? "0" : "1"),
       e.caret.classList.toggle("is-idle", a));
   }
+  /**
+   * Calcula o progresso da animação para um elemento específico, considerando
+   * a seção e o deslocamento.
+   * @param {*} e - O elemento da animação.
+   * @param {*} t - O retângulo delimitador da seção.
+   * @param {*} n - A altura da janela.
+   * @param {*} o - O timestamp atual.
+   * @returns {number} - O progresso da animação, entre 0 e 1.
+   */
   function x(e, t, n, o) {
     const a = c(t, n, 0);
     return "home" !== e.section.id
@@ -150,6 +214,11 @@ export function createScrollAnimations() {
             return t >= 1 || window.scrollY > 4 ? ((f = !1), 1) : t;
           })(o);
   }
+  /**
+   * Atualiza as animações de rolagem, calculando o progresso e aplicando
+   * transformações aos elementos animados.
+   * @param {number} e - O timestamp atual, usado para calcular o progresso da animação.
+   */
   function L(e = performance.now()) {
     const t = [];
     d.forEach((e) => {
@@ -170,9 +239,19 @@ export function createScrollAnimations() {
       (u = !1),
       f && j());
   }
+  /**
+   * Solicita uma atualização de animação, garantindo que apenas uma chamada
+   * seja feita por frame.
+   * @returns {void}
+   */
   function j() {
     u || ((u = !0), (m = requestAnimationFrame(L)));
   }
+  /**
+   * Reinicializa o conteúdo dos elementos com "metaphor", atualizando o
+   * texto e o estado da animação.
+   * @returns {void}
+   */
   function B() {
     (i.forEach((e) => e.el.style.setProperty("--progress", "1")),
       l.forEach((e) => {
@@ -181,6 +260,12 @@ export function createScrollAnimations() {
           (e.caret.style.opacity = "0"));
       }));
   }
+  /**
+   * Inicializa o monitoramento de visibilidade dos elementos animados,
+   * utilizando IntersectionObserver para detectar quando eles entram ou
+   * saem da viewport.
+   * @returns {void}
+   */
   function R() {
     ((p = new IntersectionObserver(
       (e) => {
@@ -201,6 +286,11 @@ export function createScrollAnimations() {
         ((e.el.__sa = e), p.observe(e.el));
       }));
   }
+  /**
+   * Reinicializa as animações de rolagem, desconectando observadores e
+   * limpando estados.
+   * @returns {void}
+   */
   function P() {
     (p && p.disconnect(),
       d.clear(),
@@ -209,6 +299,11 @@ export function createScrollAnimations() {
       s && document.documentElement.classList.add("scroll-native"),
       a ? B() : (R(), j()));
   }
+  /**
+   * Manipula eventos de redimensionamento, recalculando dimensões e
+   * reinicializando animações.
+   * @returns {void}
+   */
   function q() {
     (v(), j());
   }

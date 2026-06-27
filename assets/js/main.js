@@ -1,3 +1,15 @@
+/**
+ * main.js
+ * ----------------------------------------------------------------
+ * Script principal do portfólio, responsável por inicializar a
+ * interface, carregar módulos sob demanda e gerenciar eventos globais.
+ *
+ * Este arquivo importa funções de outros módulos, como i18n.js,
+ * nav.js, scroll-animations.js, theme.js, loading-overlay.js e
+ * debug.js. Ele também define funções auxiliares para criar elementos
+ * DOM, renderizar listas de projetos e gerenciar o estado da aplicação.
+ */
+
 import {
   projects as e,
   architecture as t,
@@ -19,9 +31,16 @@ import {
   ensureLoaderHidden as m,
 } from "./loading-overlay.js";
 import { debugLog as h } from "./debug.js";
+
 const v = s();
 let f = () => {},
   y = !1;
+
+/**
+ * Inicializa o portfólio, configurando idioma, navegação, animações e eventos.
+ * @param {*} e Evento ou ação que disparou a inicialização
+ * @param {*} t Opções adicionais para configuração
+ */
 function g(e, t = {}) {
   h("app", e, {
     now: Math.round(performance.now()),
@@ -30,11 +49,23 @@ function g(e, t = {}) {
     ...t,
   });
 }
+
 const S = (e, t = 1800) => {
   "requestIdleCallback" in window
     ? window.requestIdleCallback(e, { timeout: t })
     : window.setTimeout(e, 1);
 };
+
+/**
+ * Inicializa um módulo preguiçosamente, adicionando listeners e carregando sob demanda.
+ * @param {*} param0 Objeto de configuração do módulo
+ * @param {string} param0.selector Seletor CSS para os elementos que dispararão o carregamento
+ * @param {string[]} param0.events Eventos que dispararão o carregamento
+ * @param {Function} param0.importer Função que importa o módulo dinamicamente
+ * @param {string} param0.init Nome da função de inicialização do módulo
+ * @param {boolean} [param0.idle=true] Se o módulo deve ser carregado durante o tempo ocioso
+ * @returns {void}
+ */
 function j({ selector: e, events: t, importer: r, init: o, idle: a = !0 }) {
   const n = Array.from(document.querySelectorAll(e));
   if (!n.length) return;
@@ -68,6 +99,14 @@ function j({ selector: e, events: t, importer: r, init: o, idle: a = !0 }) {
   }),
     a && S(c, 3200));
 }
+
+/**
+ * Cria um elemento DOM com atributos e filhos especificados.
+ * @param {string} e Nome da tag do elemento
+ * @param {Object} t Atributos e propriedades do elemento
+ * @param {Array|Node} r Filhos do elemento
+ * @returns {HTMLElement} O elemento criado
+ */
 function w(e, t = {}, r = []) {
   const o = document.createElement(e);
   for (const [e, r] of Object.entries(t))
@@ -85,6 +124,12 @@ function w(e, t = {}, r = []) {
     o
   );
 }
+
+/**
+ * Cria uma lista de tecnologias.
+ * @param {string[]} e Array de nomes de tecnologias
+ * @returns {HTMLElement} Elemento <ul> contendo as tecnologias
+ */
 function b(e) {
   return w(
     "ul",
@@ -92,6 +137,12 @@ function b(e) {
     e.map((e) => w("li", { class: "tech" }, e)),
   );
 }
+
+/**
+ * Cria uma lista de ações para um projeto.
+ * @param {Array} e Array de objetos de ação do projeto
+ * @returns {HTMLElement} Elemento <div> contendo as ações do projeto
+ */
 function _(e) {
   return w(
     "div",
@@ -110,6 +161,14 @@ function _(e) {
     }),
   );
 }
+
+/**
+ * Cria uma linha do tempo para um projeto.
+ * @param {Object} e Objeto do projeto
+ * @param {string} e.category Categoria do projeto
+ * @param {string} e.year Ano do projeto
+ * @returns {HTMLElement|null} Elemento <div> contendo a linha do tempo ou null se não houver informações
+ */
 function E(e) {
   const t = [e.category, e.year].filter(Boolean);
   return t.length
@@ -123,6 +182,11 @@ function E(e) {
       )
     : null;
 }
+
+/**
+ * Inicializa os vídeos dos projetos, adicionando listeners para reprodução.
+ * @param {Document|HTMLElement} e Elemento raiz para buscar os vídeos
+ */
 function L(e = document) {
   e.querySelectorAll(".project-card[data-project-video]").forEach((e) => {
     e.addEventListener("click", (t) => {
@@ -130,6 +194,11 @@ function L(e = document) {
     });
   });
 }
+
+/**
+ * Inicializa o modal de vídeo do projeto, configurando eventos e controles.
+ * @returns {void}
+ */
 function k() {
   const e = document.querySelector("#projectVideoModal");
   if (!e) return;
@@ -189,6 +258,11 @@ function k() {
     }),
     L());
 }
+
+/**
+ * Inicializa o grid de projetos, criando os elementos do DOM para cada projeto.
+ * @returns {void}
+ */
 function q() {
   const t = document.querySelector("#projectsGrid");
   t &&
@@ -271,6 +345,11 @@ function q() {
     })(t),
     L(t));
 }
+
+/**
+ * Inicializa o grid de arquitetura, criando os elementos do DOM para cada item.
+ * @returns {void}
+ */
 function M() {
   (!(function () {
     const e = document.querySelector("#skillsList");
@@ -326,6 +405,11 @@ function M() {
         }));
     })());
 }
+
+/**
+ * Inicializa o monitoramento de visibilidade e navegação da página.
+ * @returns {void}
+ */
 function F() {
   const e = window.matchMedia?.("(pointer: coarse)"),
     t = () => Boolean(e?.matches);
@@ -466,6 +550,12 @@ function F() {
           : e.persisted || m({ reason: "pageshow:fresh" }));
     }));
 }
+
+/**
+ * Inicializa o portfólio, configurando idioma, navegação, animações e eventos.
+ * @param {*} e Evento ou ação que disparou a inicialização
+ * @param {*} t Opções adicionais para configuração
+ */
 function T() {
   (g("init:start"),
     a(),

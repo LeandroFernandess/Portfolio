@@ -1,6 +1,16 @@
+/**
+ * Internacionalização (i18n) do portfólio.
+ * ----------------------------------------------------------------
+ * Mantém todas as strings de interface em um único arquivo, com
+ * suporte a múltiplos idiomas. O main.js consome estas funções
+ * para traduzir a interface e alternar entre idiomas.
+ */
+
 const e = "portfolioLanguage",
   a = "pt-BR";
+
 export const LANGUAGES = ["pt-BR", "en-US"];
+
 const o = {
   "pt-BR": {
     meta: {
@@ -316,23 +326,59 @@ const o = {
     footer: { text: "Leandro. Built with commitment and attention to detail." },
   },
 };
+
 let r = a;
+
+/**
+ * Resolve a chave de tradução para o idioma atual.
+ * @param {string} e Chave de tradução.
+ * @param {string} [a] Idioma opcional.
+ * @returns {string} Tradução correspondente.
+ */
 function i(e, a = r) {
   return e.split(".").reduce((e, a) => e?.[a], o[a]);
 }
+
+/**
+ * Retorna o idioma atual.
+ * @returns {string} Idioma atual.
+ */
 export function getCurrentLanguage() {
   return r;
 }
+
+/**
+ * Traduz uma chave para o idioma atual.
+ * @param {string} e Chave de tradução.
+ * @param {Object} [o] Valores para interpolação.
+ * @param {string} [n] Idioma opcional.
+ * @returns {string} Tradução correspondente.
+ */
 export function t(e, o = {}, n = r) {
   return (function (e, a = {}) {
     return String(e).replace(/\{(\w+)\}/g, (e, o) => a[o] ?? "");
   })(i(e, n) ?? i(e, a) ?? e, o);
 }
+
+/**
+ * Localiza um valor baseado no idioma atual.
+ * @param {*} e Valor a ser localizado.
+ * @param {string} [o] Idioma opcional.
+ * @returns {string} Valor localizado.
+ */
 export function localize(e, o = r) {
   return e && "object" == typeof e && !Array.isArray(e)
     ? (e[o] ?? e[a] ?? Object.values(e)[0] ?? "")
     : (e ?? "");
 }
+
+/**
+ * Aplica o idioma selecionado à aplicação.
+ * @param {string} o Idioma a ser aplicado.
+ * @param {Object} [options] Opções adicionais.
+ * @param {boolean} [options.persist=true] Se deve persistir a escolha no localStorage.
+ * @param {boolean} [options.notify=true] Se deve notificar outros componentes sobre a mudança de idioma.
+ */
 export function applyLanguage(o, { persist: i = !0, notify: n = !0 } = {}) {
   ((r = LANGUAGES.includes(o) ? o : a),
     (document.documentElement.lang = r),
@@ -368,6 +414,11 @@ export function applyLanguage(o, { persist: i = !0, notify: n = !0 } = {}) {
         }),
       ));
 }
+
+/**
+ * Inicializa a internacionalização da aplicação.
+ * @returns {void}
+ */
 export function initI18n() {
   ((r = (function () {
     try {
@@ -384,6 +435,11 @@ export function initI18n() {
       );
     }));
 }
+
+/**
+ * Adiciona um listener para mudanças de idioma.
+ * @param {function} e Função a ser chamada quando o idioma mudar.
+ */
 export function onLanguageChange(e) {
   window.addEventListener("portfolio:languagechange", (a) =>
     e(a.detail.language),
